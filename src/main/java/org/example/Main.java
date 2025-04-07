@@ -61,6 +61,16 @@ public class Main {
                     }
                     break;
 
+                case "5":
+                    System.out.println("\n🗑️ [게시글 수정]");
+                    System.out.print("📌 수정할 게시글 ID를 입력해주세요: ");
+                    int updateId = Integer.parseInt(scanner.nextLine());
+                    System.out.print("📌 수정할 제목을 입력해주세요: ");
+                    title = scanner.nextLine();
+                    controller.updatePost(updateId, title);
+                    System.out.println("🗑️ 게시글이 성공적으로 수정되었습니다.");
+                    break;
+
                 case "0":
                     System.out.println("\n👋 프로그램을 종료합니다. 감사합니다!");
                     return;
@@ -83,6 +93,7 @@ public class Main {
         System.out.println("2️⃣  전체 게시글 조회");
         System.out.println("3️⃣  게시글 상세 조회");
         System.out.println("4️⃣  게시글 삭제");
+        System.out.println("5️⃣  게시글 수정");
         System.out.println("0️⃣  프로그램 종료");
         System.out.println("=====================================");
     }

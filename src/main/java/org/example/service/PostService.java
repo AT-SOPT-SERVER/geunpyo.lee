@@ -24,4 +24,10 @@ public class PostService {
     public boolean deletePostById(int id) {
         return postRepository.delete(id);
     }
+
+    //TODO: 검증 추가
+    public void updatePost(int postId, String title) {
+        Post post = getPostById(postId);
+        post.updatePost(title);
+    }
 }

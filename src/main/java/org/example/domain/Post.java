@@ -2,7 +2,7 @@ package org.example.domain;
 
 public class Post {
     private final int id;
-    private final String title;
+    private String title;
 
     public Post(int id, String title) {
         this.id = id;
@@ -15,5 +15,9 @@ public class Post {
 
     public String getTitle() {
         return this.title;
+    }
+
+    public void updatePost(String title) {
+        this.title = title;
     }
 }
