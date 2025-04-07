@@ -25,21 +25,16 @@ public class PostService {
         return postRepository.delete(id);
     }
 
-    public boolean updatePost(int postId, String title) {
-        boolean isValid = isValidPost(postId);
-        if (isValid) {
-            Post post = postRepository.findPostById(postId);
-            post.updatePost(title);
-        }
-        return false;
+    public void updatePost(int postId, String title) {
+        isValidPost(postId);
+        Post post = postRepository.findPostById(postId);
+        post.updatePost(title);
     }
 
-    public boolean isValidPost(int id) {
+    public void isValidPost(int id) {
         if (!postRepository.isPresent(id)) {
-            System.out.println("게시물이 존재하지 않습니다.");
-            return false;
+            throw new IllegalArgumentException("게시물이 존재하지 않습니다.");
         }
-        return true;
     }
 
 }
