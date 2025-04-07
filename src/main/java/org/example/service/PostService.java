@@ -1,5 +1,7 @@
 package org.example.service;
 
+import static org.example.util.PostValidator.isValidPost;
+
 import java.util.List;
 import org.example.domain.Post;
 import org.example.repository.PostRepository;
@@ -25,9 +27,13 @@ public class PostService {
         return postRepository.delete(id);
     }
 
-    //TODO: 검증 추가
-    public void updatePost(int postId, String title) {
-        Post post = getPostById(postId);
-        post.updatePost(title);
+    public boolean updatePost(int postId, String title) {
+        boolean isValid = isValidPost(postId);
+        if (isValid) {
+            Post post = postRepository.findPostById(postId);
+            post.updatePost(title);
+        }
+        return false;
     }
+
 }

@@ -23,7 +23,7 @@ public class PostController {
         return postService.deletePostById(id);
     }
 
-    public void updatePost(int id, String title) {
-        postService.updatePost(id, title);
+    public boolean updatePost(int id, String title) {
+        return postService.updatePost(id, title);
     }
 }

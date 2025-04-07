@@ -5,7 +5,7 @@ import java.util.List;
 import org.example.domain.Post;
 
 public class PostRepository {
-    List<Post> postList = new ArrayList<>();
+    static List<Post> postList = new ArrayList<>();
 
     public void save(Post post) {
         postList.add(post);
@@ -23,6 +23,15 @@ public class PostRepository {
         }
 
         return null;
+    }
+
+    public boolean isPresent(int id) {
+        for (Post post : postList) {
+            if (post.getId() == id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean delete(int id) {

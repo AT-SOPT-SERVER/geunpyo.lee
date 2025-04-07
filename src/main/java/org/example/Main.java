@@ -67,8 +67,12 @@ public class Main {
                     int updateId = Integer.parseInt(scanner.nextLine());
                     System.out.print("📌 수정할 제목을 입력해주세요: ");
                     title = scanner.nextLine();
-                    controller.updatePost(updateId, title);
-                    System.out.println("🗑️ 게시글이 성공적으로 수정되었습니다.");
+                    boolean updated = controller.updatePost(updateId, title);
+                    if (updated) {
+                        System.out.println("🗑️ 게시글이 성공적으로 수정되었습니다.");
+                    } else {
+                        System.out.println("❌ 게시글 수정에 실패했습니다.");
+                    }
                     break;
 
                 case "0":
