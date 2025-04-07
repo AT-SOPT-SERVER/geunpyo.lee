@@ -5,7 +5,7 @@ public class Post {
     private String title;
 
     public Post(int id, String title) {
-        validateNull(title);
+        validateTitle(title);
         this.id = id;
         this.title = title;
     }
@@ -19,13 +19,17 @@ public class Post {
     }
 
     public void updatePost(String title) {
-        validateNull(title);
+        validateTitle(title);
         this.title = title;
     }
 
-    private void validateNull(String title) {
+    private void validateTitle(String title) {
         if (title.isEmpty()) {
             throw new IllegalArgumentException("제목은 비어있을 수 없습니다.");
+        }
+
+        if (title.length() > 30) {
+            throw new IllegalArgumentException("제목은 30자를 넘길 수 없습니다. ");
         }
     }
 }
