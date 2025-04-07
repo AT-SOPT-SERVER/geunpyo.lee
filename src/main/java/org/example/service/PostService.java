@@ -1,7 +1,5 @@
 package org.example.service;
 
-import static org.example.util.PostValidator.isValidPost;
-
 import java.util.List;
 import org.example.domain.Post;
 import org.example.repository.PostRepository;
@@ -34,6 +32,14 @@ public class PostService {
             post.updatePost(title);
         }
         return false;
+    }
+
+    public boolean isValidPost(int id) {
+        if (!postRepository.isPresent(id)) {
+            System.out.println("게시물이 존재하지 않습니다.");
+            return false;
+        }
+        return true;
     }
 
 }
