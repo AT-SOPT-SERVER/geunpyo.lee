@@ -5,7 +5,7 @@ import java.util.List;
 import org.example.domain.Post;
 
 public class PostRepository {
-    static List<Post> postList = new ArrayList<>();
+    public static List<Post> postList = new ArrayList<>();
 
     public void save(Post post) {
         postList.add(post);
