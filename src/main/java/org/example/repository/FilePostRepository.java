@@ -54,6 +54,17 @@ public class FilePostRepository implements PostRepository {
     }
 
     @Override
+    public List<Post> findByTitleContaining(String titleKeyword) {
+        if (titleKeyword == null || titleKeyword.isEmpty()) {
+            return findAll();
+        }
+
+        return postMap.values().stream()
+                .filter(post -> post.getTitle().contains(titleKeyword))
+                .toList();
+    }
+
+    @Override
     public boolean isPresent(int id) {
         return postMap.get(id) != null;
     }
