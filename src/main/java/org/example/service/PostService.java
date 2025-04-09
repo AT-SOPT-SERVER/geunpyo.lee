@@ -20,6 +20,7 @@ public class PostService {
 
     public Post createPost(String title) {
         List<Post> allPosts = postRepository.findAll();
+        checkDuplicate(allPosts, title);
         checkLastPostTime(allPosts);
         Post post = new Post(generateNextId(allPosts), title);
 
@@ -40,10 +41,13 @@ public class PostService {
 
     public void updatePost(int postId, String title) {
         try {
+            List<Post> allPosts = postRepository.findAll();
+            checkDuplicate(allPosts, title);
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
             post.updatePost(title);
             postRepository.update(post);
+
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(String.format(EXCEPTION_FORMAT, e.getMessage()));
         }
@@ -70,6 +74,27 @@ public class PostService {
             long remainingSeconds = POST_CREATION_COOLDOWN.minus(sinceLastPost).getSeconds();
             throw new RuntimeException("도배 방지를 위해 " + remainingSeconds + "초 후에 다시 시도해주세요.");
         }
+    }
+
+    private void checkDuplicate(List<Post> posts, String title) {
+        String normalizedTitle = normalizeTitle(title);
+
+        List<Post> duplicates = posts.stream()
+                .filter(post -> normalizeTitle(post.getTitle()).equals(normalizedTitle))
+                .toList();
+
+        if (!duplicates.isEmpty()) {
+            throw new RuntimeException("이미 동일한 내용의 게시물이 있습니다.");
+        }
+    }
+
+    private String normalizeTitle(String title) {
+        if (title == null) {
+            return "";
+        }
+        return title.trim()
+                .toLowerCase()
+                .replaceAll("\\s+", " "); // 여러 공백을 하나로 통일
     }
 
 }
