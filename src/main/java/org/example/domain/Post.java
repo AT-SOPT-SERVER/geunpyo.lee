@@ -1,6 +1,7 @@
 package org.example.domain;
 
 import java.time.LocalDateTime;
+import org.example.util.StringUtils;
 
 public class Post {
     private final int id;
@@ -43,7 +44,7 @@ public class Post {
             throw new IllegalArgumentException("제목은 비어있을 수 없습니다.");
         }
 
-        if (title.length() > 30) {
+        if (StringUtils.getLength(title) > 30) {
             throw new IllegalArgumentException("제목은 30자를 넘길 수 없습니다. ");
         }
     }
