@@ -1,13 +1,24 @@
 package org.example.domain;
 
+import java.time.LocalDateTime;
+
 public class Post {
     private final int id;
     private String title;
+    private final LocalDateTime createdAt;
 
     public Post(int id, String title) {
         validateTitle(title);
         this.id = id;
         this.title = title;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Post(int id, String title, LocalDateTime createdAt) {
+        validateTitle(title);
+        this.id = id;
+        this.title = title;
+        this.createdAt = createdAt;
     }
 
     public int getId() {
@@ -16,6 +27,10 @@ public class Post {
 
     public String getTitle() {
         return this.title;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void updatePost(String title) {
