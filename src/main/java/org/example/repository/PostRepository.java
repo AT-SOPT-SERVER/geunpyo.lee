@@ -1,46 +1,19 @@
 package org.example.repository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.example.domain.Post;
 
-public class PostRepository {
-    public static List<Post> postList = new ArrayList<>();
+public interface PostRepository {
+    Post save(Post post);
 
-    public void save(Post post) {
-        postList.add(post);
-    }
+    Optional<Post> findById(int id);
 
-    public List<Post> findAll() {
-        return postList;
-    }
+    List<Post> findAll();
 
-    public Post findPostById(int id) {
-        for (Post post : postList) {
-            if (post.getId() == id) {
-                return post;
-            }
-        }
+    void update(Post post);
 
-        return null;
-    }
+    boolean delete(int id);
 
-    public boolean isPresent(int id) {
-        for (Post post : postList) {
-            if (post.getId() == id) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean delete(int id) {
-        for (Post post : postList) {
-            if (post.getId() == id) {
-                postList.remove(post);
-                return true;
-            }
-        }
-        return false;
-    }
+    boolean isPresent(int id);
 }
