@@ -1,8 +1,8 @@
-package org.example.repository;
+package org.sopt.repository;
 
 import java.util.List;
 import java.util.Optional;
-import org.example.domain.Post;
+import org.sopt.domain.Post;
 
 public interface PostRepository {
     Post save(Post post);

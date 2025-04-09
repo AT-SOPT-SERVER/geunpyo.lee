@@ -1,7 +1,7 @@
-package org.example.domain;
+package org.sopt.domain;
 
 import java.util.Objects;
-import org.example.util.StringUtils;
+import org.sopt.util.StringUtils;
 
 public class Title {
     private static final int MAX_LENGTH = 30;

@@ -1,9 +1,9 @@
-package org.example.controller;
+package org.sopt.controller;
 
 import java.util.List;
-import org.example.domain.Post;
-import org.example.repository.PostRepositoryFactory;
-import org.example.service.PostService;
+import org.sopt.domain.Post;
+import org.sopt.repository.PostRepositoryFactory;
+import org.sopt.service.PostService;
 
 public class PostController {
     private final PostService postService = new PostService(PostRepositoryFactory.createMarkdownRepository("posts.md"));

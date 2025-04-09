@@ -1,4 +1,4 @@
-package org.example.repository.storage;
+package org.sopt.repository.storage;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import org.example.domain.Post;
+import org.sopt.domain.Post;
 
 public class MarkdownPostStorage implements FileStorage<Post> {
     private final String fileName;

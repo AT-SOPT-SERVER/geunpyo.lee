@@ -1,4 +1,4 @@
-package org.example.repository.storage;
+package org.sopt.repository.storage;
 
 import java.util.List;
 

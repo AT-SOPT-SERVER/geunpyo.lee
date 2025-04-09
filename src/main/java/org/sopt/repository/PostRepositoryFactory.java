@@ -1,8 +1,8 @@
-package org.example.repository;
+package org.sopt.repository;
 
-import org.example.domain.Post;
-import org.example.repository.storage.FileStorage;
-import org.example.repository.storage.MarkdownPostStorage;
+import org.sopt.domain.Post;
+import org.sopt.repository.storage.FileStorage;
+import org.sopt.repository.storage.MarkdownPostStorage;
 
 public class PostRepositoryFactory {
 
@@ -10,5 +10,5 @@ public class PostRepositoryFactory {
         FileStorage<Post> storage = new MarkdownPostStorage(fileName);
         return new FilePostRepository(storage);
     }
-    
+
 }

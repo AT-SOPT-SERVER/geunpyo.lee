@@ -1,13 +1,13 @@
-package org.example.service;
+package org.sopt.service;
 
-import static org.example.util.IdUtils.generateNextId;
+import static org.sopt.util.IdUtils.generateNextId;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import org.example.domain.Post;
-import org.example.repository.PostRepository;
+import org.sopt.domain.Post;
+import org.sopt.repository.PostRepository;
 
 public class PostService {
     private final PostRepository postRepository;

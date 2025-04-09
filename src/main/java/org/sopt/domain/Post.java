@@ -1,4 +1,4 @@
-package org.example.domain;
+package org.sopt.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

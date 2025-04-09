@@ -1,7 +1,7 @@
-package org.example.util;
+package org.sopt.util;
 
 import java.util.List;
-import org.example.domain.Post;
+import org.sopt.domain.Post;
 
 public class IdUtils {
     public static int generateNextId(List<Post> posts) {

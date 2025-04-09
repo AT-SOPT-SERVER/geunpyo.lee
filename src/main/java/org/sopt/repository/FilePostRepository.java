@@ -1,12 +1,12 @@
-package org.example.repository;
+package org.sopt.repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.example.domain.Post;
-import org.example.repository.storage.FileStorage;
+import org.sopt.domain.Post;
+import org.sopt.repository.storage.FileStorage;
 
 public class FilePostRepository implements PostRepository {
     private final Map<Integer, Post> postMap = new HashMap<>();

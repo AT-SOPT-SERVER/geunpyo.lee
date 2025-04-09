@@ -1,9 +1,9 @@
-package org.example;
+package org.sopt;
 
 import java.util.List;
 import java.util.Scanner;
-import org.example.controller.PostController;
-import org.example.domain.Post;
+import org.sopt.controller.PostController;
+import org.sopt.domain.Post;
 
 public class Main {
     public static void main(String[] args) {
