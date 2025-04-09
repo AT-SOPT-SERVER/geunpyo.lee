@@ -18,13 +18,13 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public Post createPost(String title) {
+    public void createPost(String title) {
         List<Post> allPosts = postRepository.findAll();
         checkDuplicate(allPosts, title);
         checkLastPostTime(allPosts);
         Post post = new Post(generateNextId(allPosts), title);
 
-        return postRepository.save(post);
+        postRepository.save(post);
     }
 
     public List<Post> getAllPost() {
