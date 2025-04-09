@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.List;
 import java.util.Scanner;
 import org.example.controller.PostController;
 import org.example.domain.Post;
@@ -72,6 +73,17 @@ public class Main {
 
                     break;
 
+                case "6":
+                    System.out.println("\n🗑️ [게시글 검색]");
+                    System.out.print("📌 검색할 게시글을 입력해주세요: ");
+                    title = scanner.nextLine();
+                    List<Post> posts = controller.search(title);
+                    System.out.printf("📌 유사한 게시물 %d 개를 발견했습니다. \n", posts.size());
+                    for (Post post : posts) {
+                        System.out.printf("🆔 %d | 📌 제목: %s\n", post.getId(), post.getTitle());
+                    }
+                    break;
+
                 case "0":
                     System.out.println("\n👋 프로그램을 종료합니다. 감사합니다!");
                     return;
@@ -95,6 +107,7 @@ public class Main {
         System.out.println("3️⃣  게시글 상세 조회");
         System.out.println("4️⃣  게시글 삭제");
         System.out.println("5️⃣  게시글 수정");
+        System.out.println("6️⃣  게시글 검색");
         System.out.println("0️⃣  프로그램 종료");
         System.out.println("=====================================");
     }

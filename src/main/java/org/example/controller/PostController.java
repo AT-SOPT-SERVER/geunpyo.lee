@@ -27,4 +27,8 @@ public class PostController {
     public void updatePost(int id, String title) {
         postService.updatePost(id, title);
     }
+
+    public List<Post> search(String keyword) {
+        return postService.searchPost(keyword);
+    }
 }

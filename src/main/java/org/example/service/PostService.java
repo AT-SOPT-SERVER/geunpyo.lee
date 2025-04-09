@@ -53,6 +53,13 @@ public class PostService {
         }
     }
 
+    public List<Post> searchPost(String keyword) {
+        if (keyword.length() < 2) {
+            throw new IllegalArgumentException("검색은 두 글자 이상부터 가능합니다.");
+        }
+        return postRepository.findByTitleContaining(keyword);
+    }
+
     private void checkLastPostTime(List<Post> posts) {
 
         if (posts.isEmpty()) {
@@ -96,5 +103,4 @@ public class PostService {
                 .toLowerCase()
                 .replaceAll("\\s+", " "); // 여러 공백을 하나로 통일
     }
-
 }
