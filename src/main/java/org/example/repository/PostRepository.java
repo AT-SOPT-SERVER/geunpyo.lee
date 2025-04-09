@@ -16,4 +16,6 @@ public interface PostRepository {
     boolean delete(int id);
 
     boolean isPresent(int id);
+
+    List<Post> findByTitleContaining(String titleKeyword);
 }
