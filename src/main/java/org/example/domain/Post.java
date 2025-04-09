@@ -1,25 +1,23 @@
 package org.example.domain;
 
 import java.time.LocalDateTime;
-import org.example.util.StringUtils;
+import java.util.Objects;
 
 public class Post {
     private final int id;
-    private String title;
+    private Title title;
     private final LocalDateTime createdAt;
 
     public Post(int id, String title) {
-        validateTitle(title);
         this.id = id;
-        this.title = title;
+        this.title = new Title(title);
         this.createdAt = LocalDateTime.now();
     }
 
     public Post(int id, String title, LocalDateTime createdAt) {
-        validateTitle(title);
         this.id = id;
-        this.title = title;
-        this.createdAt = createdAt;
+        this.title = new Title(title);
+        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
     }
 
     public int getId() {
@@ -27,7 +25,7 @@ public class Post {
     }
 
     public String getTitle() {
-        return this.title;
+        return this.title.getValue();
     }
 
     public LocalDateTime getCreatedAt() {
@@ -35,17 +33,34 @@ public class Post {
     }
 
     public void updatePost(String title) {
-        validateTitle(title);
-        this.title = title;
+        this.title = new Title(title);
     }
 
-    private void validateTitle(String title) {
-        if (title.isEmpty()) {
-            throw new IllegalArgumentException("제목은 비어있을 수 없습니다.");
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Post post = (Post) o;
+        return id == post.id &&
+                Objects.equals(title, post.title) &&
+                Objects.equals(createdAt, post.createdAt);
+    }
 
-        if (StringUtils.getLength(title) > 30) {
-            throw new IllegalArgumentException("제목은 30자를 넘길 수 없습니다. ");
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, createdAt);
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
