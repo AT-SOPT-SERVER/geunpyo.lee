@@ -70,10 +70,6 @@ public class PostService {
                 .max(Comparator.comparing(Post::getCreatedAt))
                 .orElse(null);
 
-        if (latestPost == null) {
-            return;
-        }
-
         LocalDateTime now = LocalDateTime.now();
         Duration sinceLastPost = Duration.between(latestPost.getCreatedAt(), now);
 
