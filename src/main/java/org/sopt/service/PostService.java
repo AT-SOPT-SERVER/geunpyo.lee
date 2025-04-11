@@ -12,7 +12,6 @@ import org.sopt.repository.PostRepository;
 public class PostService {
     private final PostRepository postRepository;
     private static final Duration POST_CREATION_COOLDOWN = Duration.ofMinutes(3);
-    private final String EXCEPTION_FORMAT = "서비스 처리중 예외 발생: %s";
 
     public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
@@ -40,17 +39,12 @@ public class PostService {
     }
 
     public void updatePost(int postId, String title) {
-        try {
-            List<Post> allPosts = postRepository.findAll();
-            checkDuplicate(allPosts, title);
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
-            post.updatePost(title);
-            postRepository.update(post);
-
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(String.format(EXCEPTION_FORMAT, e.getMessage()));
-        }
+        List<Post> allPosts = postRepository.findAll();
+        checkDuplicate(allPosts, title);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+        post.updatePost(title);
+        postRepository.update(post);
     }
 
     public List<Post> searchPost(String keyword) {
