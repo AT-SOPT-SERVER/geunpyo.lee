@@ -1,11 +1,14 @@
 package org.sopt.domain;
 
 import java.util.Objects;
-import org.sopt.util.StringUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Title {
     private static final int MAX_LENGTH = 30;
     private final String value;
+    private final Pattern graphemePattern = Pattern.compile("\\X");
+    private final Matcher graphemeMatcher = graphemePattern.matcher("");
 
     public Title(String value) {
         validate(value);
@@ -17,7 +20,7 @@ public class Title {
             throw new IllegalArgumentException("제목은 비어있을 수 없습니다.");
         }
 
-        int length = StringUtils.getLength(value);
+        int length = getLength(value);
         if (length > MAX_LENGTH) {
             throw new IllegalArgumentException(
                     String.format("제목은 %d자를 넘길 수 없습니다. (현재: %d자)", MAX_LENGTH, length));
@@ -28,8 +31,16 @@ public class Title {
         return value;
     }
 
-    public int getLength() {
-        return StringUtils.getLength(value);
+    public int getLength(String text) {
+        if (text == null) {
+            return 0;
+        }
+        graphemeMatcher.reset(text);
+        int count = 0;
+        while (graphemeMatcher.find()) {
+            count++;
+        }
+        return count;
     }
 
     @Override
