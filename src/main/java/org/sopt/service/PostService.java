@@ -1,7 +1,5 @@
 package org.sopt.service;
 
-import static org.sopt.util.IdUtils.*;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -25,7 +23,7 @@ public class PostService {
 		List<Post> allPosts = postRepository.findAll();
 		checkDuplicate(allPosts, title);
 		checkLastPostTime(allPosts);
-		Post post = new Post(generateNextId(allPosts), title);
+		Post post = new Post(title);
 
 		postRepository.save(post);
 	}

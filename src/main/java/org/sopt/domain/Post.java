@@ -3,27 +3,32 @@ package org.sopt.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Post {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
+	@CreatedDate
 	private LocalDateTime createdAt;
 
 	@Embedded
 	private Title title;
 
-	public Post(int id, String title) {
-		this.id = id;
+	public Post(String title) {
 		this.title = new Title(title);
-		this.createdAt = LocalDateTime.now();
 	}
 
 	public Post(int id, String title, LocalDateTime createdAt) {
