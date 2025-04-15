@@ -19,6 +19,7 @@ public class PostService {
 		this.postRepository = postRepository;
 	}
 
+	@Transactional
 	public void createPost(String title) {
 		Title validTitle = checkDuplicate(title);
 		checkLastPostTime();
@@ -26,14 +27,17 @@ public class PostService {
 		postRepository.save(post);
 	}
 
+	@Transactional(readOnly = true)
 	public List<Post> getAllPost() {
 		return postRepository.findAll();
 	}
 
+	@Transactional(readOnly = true)
 	public Post getPostById(int id) {
 		return postRepository.findById(id).orElseGet(null);
 	}
 
+	@Transactional
 	public void deletePostById(int id) {
 		Post post = postRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
