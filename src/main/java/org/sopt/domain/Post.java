@@ -45,7 +45,7 @@ public class Post {
 		return this.id;
 	}
 
-	public String getTitle() {
+	public String getTitleContent() {
 		return this.title.getContent();
 	}
 
