@@ -27,8 +27,8 @@ public class Post {
 	@Embedded
 	private Title title;
 
-	public Post(String title) {
-		this.title = new Title(title);
+	public Post(Title title) {
+		this.title = title;
 	}
 
 	public Post(int id, String title, LocalDateTime createdAt) {
