@@ -2,10 +2,10 @@ package org.sopt.service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 
 import org.sopt.domain.Post;
+import org.sopt.domain.Title;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +20,9 @@ public class PostService {
 	}
 
 	public void createPost(String title) {
-		List<Post> allPosts = postRepository.findAll();
-		checkDuplicate(allPosts, title);
-		checkLastPostTime(allPosts);
-		Post post = new Post(title);
-
+		Title validTitle = checkDuplicate(title);
+		checkLastPostTime();
+		Post post = new Post(validTitle);
 		postRepository.save(post);
 	}
 
@@ -44,8 +42,7 @@ public class PostService {
 
 	@Transactional
 	public void updatePost(int postId, String title) {
-		List<Post> allPosts = postRepository.findAll();
-		checkDuplicate(allPosts, title);
+		checkDuplicate(title);
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
 		post.updatePost(title);
@@ -59,15 +56,13 @@ public class PostService {
 		return postRepository.findByTitleContentContaining(keyword);
 	}
 
-	private void checkLastPostTime(List<Post> posts) {
+	private void checkLastPostTime() {
 
-		if (posts.isEmpty()) {
+		Post latestPost = postRepository.findTopByOrderByCreatedAtDesc().orElseGet(null);
+
+		if (latestPost == null) {
 			return;
 		}
-
-		Post latestPost = posts.stream()
-			.max(Comparator.comparing(Post::getCreatedAt))
-			.orElse(null);
 
 		LocalDateTime now = LocalDateTime.now();
 		Duration sinceLastPost = Duration.between(latestPost.getCreatedAt(), now);
@@ -78,24 +73,11 @@ public class PostService {
 		}
 	}
 
-	private void checkDuplicate(List<Post> posts, String title) {
-		String normalizedTitle = normalizeTitle(title);
-
-		List<Post> duplicates = posts.stream()
-			.filter(post -> normalizeTitle(post.getTitle()).equals(normalizedTitle))
-			.toList();
-
-		if (!duplicates.isEmpty()) {
+	private Title checkDuplicate(String content) {
+		Title title = new Title(content);
+		if (postRepository.existsByTitle(title)) {
 			throw new RuntimeException("이미 동일한 내용의 게시물이 있습니다.");
 		}
-	}
-
-	private String normalizeTitle(String title) {
-		if (title == null) {
-			return "";
-		}
-		return title.trim()
-			.toLowerCase()
-			.replaceAll("\\s+", " "); // 여러 공백을 하나로 통일
+		return title;
 	}
 }
