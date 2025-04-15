@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.sopt.domain.Post;
 import org.sopt.domain.Title;
+import org.sopt.dto.PostResponse;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,13 +31,18 @@ public class PostService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Post> getAllPost() {
-		return postRepository.findAll();
+	public List<PostResponse> getAllPost() {
+		List<Post> posts = postRepository.findAll();
+		
+		return posts.stream()
+			.map(PostResponse::from)
+			.toList();
 	}
 
 	@Transactional(readOnly = true)
-	public Post getPostById(int id) {
-		return postRepository.findById(id).orElseGet(null);
+	public PostResponse getPostById(int id) {
+		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+		return PostResponse.from(post);
 	}
 
 	@Transactional

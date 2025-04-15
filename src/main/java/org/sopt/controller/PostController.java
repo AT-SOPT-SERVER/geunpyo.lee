@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sopt.domain.Post;
 import org.sopt.dto.PostRequest;
+import org.sopt.dto.PostResponse;
 import org.sopt.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,9 @@ public class PostController {
 	}
 
 	@PostMapping("/post")
-	public void createPost(@RequestBody PostRequest postRequest) {
+	public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest) {
 		postService.createPost(postRequest.getTitle());
+		return ResponseEntity.ok(HttpStatus.OK);
 	}
 
 	@GetMapping("/posts/all")
@@ -35,8 +37,8 @@ public class PostController {
 	}
 
 	@GetMapping("/post/{id}")
-	public Post getPostById(@PathVariable int id) {
-		return postService.getPostById(id);
+	public ResponseEntity<PostResponse> getPostById(@PathVariable int id) {
+		return ResponseEntity.ok(postService.getPostById(id));
 	}
 
 	@DeleteMapping("/post/{id}")
