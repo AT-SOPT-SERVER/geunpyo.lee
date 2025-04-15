@@ -1,8 +1,8 @@
 package org.sopt.domain;
 
+import static org.sopt.util.StringLengthUtil.*;
+
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -10,7 +10,6 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class Title {
 	private static final int MAX_LENGTH = 30;
-	private static final Pattern GRAPHEME_PATTERN = Pattern.compile("\\X");
 
 	@Column(nullable = false)
 	private String content;
@@ -33,18 +32,6 @@ public class Title {
 			throw new IllegalArgumentException(
 				String.format("제목은 %d자를 넘길 수 없습니다. (현재: %d자)", MAX_LENGTH, length));
 		}
-	}
-
-	public int getLength(String text) {
-		if (text == null) {
-			return 0;
-		}
-		Matcher matcher = GRAPHEME_PATTERN.matcher(text);
-		int count = 0;
-		while (matcher.find()) {
-			count++;
-		}
-		return count;
 	}
 
 	@Override
