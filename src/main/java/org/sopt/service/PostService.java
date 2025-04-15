@@ -5,6 +5,7 @@ import static java.lang.reflect.Array.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.sopt.domain.Post;
 import org.sopt.domain.Title;
@@ -33,7 +34,7 @@ public class PostService {
 	@Transactional(readOnly = true)
 	public List<PostResponse> getAllPost() {
 		List<Post> posts = postRepository.findAll();
-		
+
 		return posts.stream()
 			.map(PostResponse::from)
 			.toList();
@@ -65,19 +66,19 @@ public class PostService {
 		if (getLength(keyword.length()) < 2) {
 			throw new IllegalArgumentException("검색은 두 글자 이상부터 가능합니다.");
 		}
-		return postRepository.findByTitleContentContaining(keyword);
+		return postRepository.findByTitle_ContentContaining(keyword);
 	}
 
 	private void checkLastPostTime() {
 
-		Post latestPost = postRepository.findTopByOrderByCreatedAtDesc().orElseGet(null);
+		Optional<Post> latestPost = postRepository.findTopByOrderByCreatedAtDesc();
 
-		if (latestPost == null) {
+		if (latestPost.isEmpty()) {
 			return;
 		}
 
 		LocalDateTime now = LocalDateTime.now();
-		Duration sinceLastPost = Duration.between(latestPost.getCreatedAt(), now);
+		Duration sinceLastPost = Duration.between(latestPost.get().getCreatedAt(), now);
 
 		if (sinceLastPost.compareTo(POST_CREATION_COOLDOWN) < 0) {
 			long remainingSeconds = POST_CREATION_COOLDOWN.minus(sinceLastPost).getSeconds();

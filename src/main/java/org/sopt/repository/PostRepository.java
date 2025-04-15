@@ -8,7 +8,7 @@ import org.sopt.domain.Title;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
-	List<Post> findByTitleContentContaining(String keyword);
+	List<Post> findByTitle_ContentContaining(String keyword);
 
 	boolean existsByTitle(Title title);
 
