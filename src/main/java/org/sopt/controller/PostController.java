@@ -25,13 +25,13 @@ public class PostController {
 		this.postService = postService;
 	}
 
-	@PostMapping("/post")
+	@PostMapping("/posts")
 	public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest) {
 		postService.createPost(postRequest.getTitle());
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
 
-	@GetMapping("/posts/all")
+	@GetMapping("/posts")
 	public ResponseEntity<?> getAllPosts() {
 		return ResponseEntity.ok(postService.getAllPost());
 	}
