@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.sopt.domain.Post;
 import org.sopt.domain.Title;
 import org.sopt.dto.PostResponse;
+import org.sopt.exception.PostNotFoundException;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,22 +43,20 @@ public class PostService {
 
 	@Transactional(readOnly = true)
 	public PostResponse getPostById(int id) {
-		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
 		return PostResponse.from(post);
 	}
 
 	@Transactional
 	public void deletePostById(int id) {
-		Post post = postRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
 		postRepository.delete(post);
 	}
 
 	@Transactional
 	public void updatePost(int postId, String title) {
 		checkDuplicate(title);
-		Post post = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
+		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 		post.updatePost(title);
 	}
 
