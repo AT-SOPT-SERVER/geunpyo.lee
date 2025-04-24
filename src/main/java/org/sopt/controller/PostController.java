@@ -36,23 +36,23 @@ public class PostController {
 		return ResponseEntity.ok(postService.getAllPost());
 	}
 
-	@GetMapping("/post/{id}")
+	@GetMapping("/posts/{id}")
 	public ResponseEntity<PostResponse> getPostById(@PathVariable int id) {
 		return ResponseEntity.ok(postService.getPostById(id));
 	}
 
-	@DeleteMapping("/post/{id}")
+	@DeleteMapping("/posts/{id}")
 	public ResponseEntity<?> deletePostById(@PathVariable int id) {
 		postService.deletePostById(id);
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
 
-	@PutMapping("/post/{id}")
+	@PutMapping("/posts/{id}")
 	public void updatePost(@PathVariable int id, @RequestBody PostRequest request) {
 		postService.updatePost(id, request.getTitle());
 	}
 
-	@GetMapping("/posts")
+	@GetMapping("/posts/search")
 	public List<Post> search(@RequestParam String keyword) {
 		return postService.searchPost(keyword);
 	}
