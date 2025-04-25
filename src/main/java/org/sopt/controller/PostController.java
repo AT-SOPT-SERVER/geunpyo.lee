@@ -25,7 +25,7 @@ public class PostController {
 
 	@PostMapping("/posts")
 	public ResponseDto<PostResponse> createPost(@RequestBody PostRequest postRequest) {
-		PostResponse response = postService.createPost(postRequest.getTitle());
+		PostResponse response = postService.createPost(postRequest.title());
 		return ResponseDto.created(response);
 	}
 
@@ -47,7 +47,7 @@ public class PostController {
 
 	@PutMapping("/posts/{id}")
 	public ResponseDto<Void> updatePost(@PathVariable int id, @RequestBody PostRequest request) {
-		postService.updatePost(id, request.getTitle());
+		postService.updatePost(id, request.title());
 		return ResponseDto.okWithoutContent();
 	}
 
