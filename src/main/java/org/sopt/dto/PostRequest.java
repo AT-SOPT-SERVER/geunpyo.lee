@@ -2,6 +2,7 @@ package org.sopt.dto;
 
 import static org.sopt.util.StringLengthUtil.*;
 
+import org.sopt.exception.TitleEmptyException;
 import org.sopt.exception.TitleLengthException;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -23,7 +24,7 @@ public class PostRequest {
 
 	private void validate(String value) {
 		if (value == null || value.trim().isEmpty()) {
-			throw new IllegalArgumentException("제목은 비어있을 수 없습니다.");
+			throw new TitleEmptyException();
 		}
 
 		int length = getLength(value);
