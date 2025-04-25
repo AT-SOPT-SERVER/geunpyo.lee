@@ -9,6 +9,7 @@ import org.sopt.domain.Post;
 import org.sopt.domain.Title;
 import org.sopt.dto.PostResponse;
 import org.sopt.exception.PostNotFoundException;
+import org.sopt.exception.RequestCooldownException;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +86,7 @@ public class PostService {
 
 		if (sinceLastPost.compareTo(POST_CREATION_COOLDOWN) < 0) {
 			long remainingSeconds = POST_CREATION_COOLDOWN.minus(sinceLastPost).getSeconds();
-			throw new RuntimeException("도배 방지를 위해 " + remainingSeconds + "초 후에 다시 시도해주세요.");
+			throw new RequestCooldownException(remainingSeconds);
 		}
 	}
 
