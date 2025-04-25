@@ -62,7 +62,9 @@ public class PostService {
 	}
 
 	@Transactional
-	public void updatePost(int postId, String title) {
+	public void updatePost(int postId, PostRequest request) {
+		String title = request.title();
+		
 		verifyTitleNotDuplicated(title);
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 		post.updatePost(title);

@@ -47,7 +47,7 @@ public class PostController {
 
 	@PutMapping("/posts/{id}")
 	public ResponseDto<Void> updatePost(@PathVariable int id, @RequestBody PostRequest request) {
-		postService.updatePost(id, request.title());
+		postService.updatePost(id, request);
 		return ResponseDto.okWithoutContent();
 	}
 
