@@ -1,23 +1,20 @@
 package org.sopt.domain;
 
-import static org.sopt.util.StringLengthUtil.*;
+import static org.sopt.util.TitleFormatValidateUtil.*;
 
 import java.util.Objects;
-
-import org.sopt.exception.TitleLengthException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class Title {
-	private static final int MAX_LENGTH = 30;
 
 	@Column(nullable = false)
 	private String content;
 
 	public Title(String content) {
-		validateLength(content);
+		validate(content);
 		this.content = content;
 	}
 
@@ -26,13 +23,6 @@ public class Title {
 
 	public String getContent() {
 		return content;
-	}
-
-	private void validateLength(String value) {
-		int length = getLength(value);
-		if (length > MAX_LENGTH) {
-			throw new TitleLengthException();
-		}
 	}
 
 	@Override
