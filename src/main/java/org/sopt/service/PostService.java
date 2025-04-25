@@ -9,6 +9,7 @@ import org.sopt.domain.Post;
 import org.sopt.domain.Title;
 import org.sopt.dto.PostResponse;
 import org.sopt.exception.PostNotFoundException;
+import org.sopt.exception.PostTitleDuplicateException;
 import org.sopt.exception.RequestCooldownException;
 import org.sopt.repository.PostRepository;
 import org.springframework.stereotype.Service;
@@ -91,7 +92,7 @@ public class PostService {
 
 	private void checkDuplicate(String title) {
 		if (postRepository.existsByTitle_Content(title)) {
-			throw new RuntimeException("이미 동일한 내용의 게시물이 있습니다.");
+			throw new PostTitleDuplicateException();
 		}
 	}
 }
