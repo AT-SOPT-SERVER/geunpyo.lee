@@ -7,8 +7,9 @@ import java.util.Optional;
 
 import org.sopt.domain.Post;
 import org.sopt.domain.Title;
-import org.sopt.dto.PostRequest;
+import org.sopt.dto.PostCreateRequest;
 import org.sopt.dto.PostResponse;
+import org.sopt.dto.PostUpdateRequest;
 import org.sopt.exception.PostNotFoundException;
 import org.sopt.exception.PostTitleDuplicateException;
 import org.sopt.exception.RequestCooldownException;
@@ -26,8 +27,8 @@ public class PostService {
 	}
 
 	@Transactional
-	public PostResponse createPost(PostRequest postRequest) {
-		String title = postRequest.title();
+	public PostResponse createPost(PostCreateRequest postCreateRequest) {
+		String title = postCreateRequest.title();
 
 		verifyTitleNotDuplicated(title);
 		checkLastPostTime();
@@ -62,9 +63,9 @@ public class PostService {
 	}
 
 	@Transactional
-	public void updatePost(int postId, PostRequest request) {
+	public void updatePost(int postId, PostUpdateRequest request) {
 		String title = request.title();
-		
+
 		verifyTitleNotDuplicated(title);
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 		post.updatePost(title);

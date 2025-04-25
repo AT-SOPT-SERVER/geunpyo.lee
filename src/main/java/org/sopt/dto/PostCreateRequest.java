@@ -8,17 +8,17 @@ import org.sopt.exception.TitleLengthException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record PostRequest(String title) {
+public record PostCreateRequest(String title) {
 	private static final int MAX_LENGTH = 30;
 
 	@JsonCreator
-	public PostRequest(@JsonProperty("title") String title) {
+	public PostCreateRequest(@JsonProperty("title") String title) {
 		validate(title);
 		this.title = title;
 	}
 
 	private void validate(String value) {
-		if (value == null || value.trim().isEmpty()) {
+		if (value == null || value.isBlank()) {
 			throw new TitleEmptyException();
 		}
 

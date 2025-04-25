@@ -2,8 +2,9 @@ package org.sopt.controller;
 
 import java.util.List;
 
-import org.sopt.dto.PostRequest;
+import org.sopt.dto.PostCreateRequest;
 import org.sopt.dto.PostResponse;
+import org.sopt.dto.PostUpdateRequest;
 import org.sopt.global.common.dto.ResponseDto;
 import org.sopt.service.PostService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,8 +25,8 @@ public class PostController {
 	}
 
 	@PostMapping("/posts")
-	public ResponseDto<PostResponse> createPost(@RequestBody PostRequest postRequest) {
-		PostResponse response = postService.createPost(postRequest);
+	public ResponseDto<PostResponse> createPost(@RequestBody PostCreateRequest postCreateRequest) {
+		PostResponse response = postService.createPost(postCreateRequest);
 		return ResponseDto.created(response);
 	}
 
@@ -46,7 +47,7 @@ public class PostController {
 	}
 
 	@PutMapping("/posts/{id}")
-	public ResponseDto<Void> updatePost(@PathVariable int id, @RequestBody PostRequest request) {
+	public ResponseDto<Void> updatePost(@PathVariable int id, @RequestBody PostUpdateRequest request) {
 		postService.updatePost(id, request);
 		return ResponseDto.okWithoutContent();
 	}
