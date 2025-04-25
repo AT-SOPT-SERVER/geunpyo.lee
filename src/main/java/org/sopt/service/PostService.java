@@ -25,11 +25,16 @@ public class PostService {
 	}
 
 	@Transactional
-	public void createPost(String title) {
-		Title validTitle = checkDuplicate(title);
+	public PostResponse createPost(String title) {
+		checkDuplicate(title);
 		checkLastPostTime();
+
+		Title validTitle = new Title(title);
+
 		Post post = new Post(validTitle);
-		postRepository.save(post);
+		Post savedPost = postRepository.save(post);
+
+		return PostResponse.from(savedPost);
 	}
 
 	@Transactional(readOnly = true)
@@ -85,11 +90,9 @@ public class PostService {
 		}
 	}
 
-	private Title checkDuplicate(String content) {
-		Title title = new Title(content);
-		if (postRepository.existsByTitle(title)) {
+	private void checkDuplicate(String title) {
+		if (postRepository.existsByTitle_Content(title)) {
 			throw new RuntimeException("이미 동일한 내용의 게시물이 있습니다.");
 		}
-		return title;
 	}
 }

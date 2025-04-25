@@ -5,6 +5,7 @@ import java.util.List;
 import org.sopt.domain.Post;
 import org.sopt.dto.PostRequest;
 import org.sopt.dto.PostResponse;
+import org.sopt.global.common.dto.ResponseDto;
 import org.sopt.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,9 @@ public class PostController {
 	}
 
 	@PostMapping("/posts")
-	public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest) {
-		postService.createPost(postRequest.getTitle());
-		return ResponseEntity.ok(HttpStatus.OK);
+	public ResponseDto<PostResponse> createPost(@RequestBody PostRequest postRequest) {
+		PostResponse response = postService.createPost(postRequest.getTitle());
+		return ResponseDto.created(response);
 	}
 
 	@GetMapping("/posts")
