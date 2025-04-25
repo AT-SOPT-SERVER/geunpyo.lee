@@ -4,6 +4,8 @@ import static org.sopt.util.StringLengthUtil.*;
 
 import java.util.Objects;
 
+import org.sopt.exception.TitleLengthException;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
@@ -29,8 +31,7 @@ public class Title {
 	private void validateLength(String value) {
 		int length = getLength(value);
 		if (length > MAX_LENGTH) {
-			throw new IllegalArgumentException(
-				String.format("제목은 %d자를 넘길 수 없습니다. (현재: %d자)", MAX_LENGTH, length));
+			throw new TitleLengthException();
 		}
 	}
 
