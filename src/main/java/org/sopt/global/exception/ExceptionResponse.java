@@ -11,12 +11,4 @@ public record ExceptionResponse(String code, String message) {
 			exceptionCode.getMessage()
 		);
 	}
-
-	public static ExceptionResponse withMessage(ExceptionCode exceptionCode, String message) {
-		return new ExceptionResponse(
-			exceptionCode.getCode(),
-			message
-		);
-	}
-
 }

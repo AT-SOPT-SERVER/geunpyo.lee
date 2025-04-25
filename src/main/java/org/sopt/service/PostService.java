@@ -85,8 +85,7 @@ public class PostService {
 		Duration sinceLastPost = Duration.between(latestPost.get().getCreatedAt(), now);
 
 		if (sinceLastPost.compareTo(POST_CREATION_COOLDOWN) < 0) {
-			long remainingSeconds = POST_CREATION_COOLDOWN.minus(sinceLastPost).getSeconds();
-			throw new RequestCooldownException(remainingSeconds);
+			throw new RequestCooldownException();
 		}
 	}
 
