@@ -1,7 +1,6 @@
 package org.sopt.global.common.dto;
 
 import org.sopt.global.common.constant.SuccessCode;
-import org.springframework.http.HttpStatus;
 
 public class ResponseDto<T> {
 	private final String code;
@@ -16,10 +15,6 @@ public class ResponseDto<T> {
 
 	public static <T> ResponseDto<T> of(SuccessCode successCode, T data) {
 		return new ResponseDto<>(successCode.getCode(), successCode.getMessage(), data);
-	}
-
-	public static <T> ResponseDto<T> of(HttpStatus httpStatus, T data) {
-		return of(SuccessCode.valueOf(httpStatus), data);
 	}
 
 	public static <T> ResponseDto<T> ok(T data) {

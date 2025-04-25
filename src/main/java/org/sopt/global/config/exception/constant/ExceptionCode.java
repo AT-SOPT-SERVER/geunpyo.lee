@@ -47,8 +47,4 @@ public enum ExceptionCode {
 	public String getMessage() {
 		return message;
 	}
-
-	public int getStatusCode() {
-		return status.value();
-	}
 }
