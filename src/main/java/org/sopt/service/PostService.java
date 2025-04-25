@@ -1,7 +1,5 @@
 package org.sopt.service;
 
-import static java.lang.reflect.Array.*;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +10,7 @@ import org.sopt.domain.Title;
 import org.sopt.dto.PostResponse;
 import org.sopt.exception.PostNotFoundException;
 import org.sopt.repository.PostRepository;
+import org.sopt.util.StringLengthUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,11 +65,16 @@ public class PostService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Post> searchPost(String keyword) {
-		if (getLength(keyword.length()) < 2) {
+	public List<PostResponse> searchPost(String keyword) {
+		if (StringLengthUtil.getLength(keyword) < 2) {
 			throw new IllegalArgumentException("검색은 두 글자 이상부터 가능합니다.");
 		}
-		return postRepository.findByTitle_ContentContaining(keyword);
+
+		List<Post> posts = postRepository.findByTitle_ContentContaining(keyword);
+
+		return posts.stream()
+			.map(PostResponse::from)
+			.toList();
 	}
 
 	private void checkLastPostTime() {

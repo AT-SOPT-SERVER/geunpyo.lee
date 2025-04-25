@@ -2,13 +2,10 @@ package org.sopt.controller;
 
 import java.util.List;
 
-import org.sopt.domain.Post;
 import org.sopt.dto.PostRequest;
 import org.sopt.dto.PostResponse;
 import org.sopt.global.common.dto.ResponseDto;
 import org.sopt.service.PostService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,28 +30,30 @@ public class PostController {
 	}
 
 	@GetMapping("/posts")
-	public ResponseEntity<?> getAllPosts() {
-		return ResponseEntity.ok(postService.getAllPost());
+	public ResponseDto<List<PostResponse>> getAllPosts() {
+		return ResponseDto.ok(postService.getAllPost());
 	}
 
 	@GetMapping("/posts/{id}")
-	public ResponseEntity<PostResponse> getPostById(@PathVariable int id) {
-		return ResponseEntity.ok(postService.getPostById(id));
+	public ResponseDto<PostResponse> getPostById(@PathVariable int id) {
+		return ResponseDto.ok(postService.getPostById(id));
 	}
 
 	@DeleteMapping("/posts/{id}")
-	public ResponseEntity<?> deletePostById(@PathVariable int id) {
+	public ResponseDto<Void> deletePostById(@PathVariable int id) {
 		postService.deletePostById(id);
-		return ResponseEntity.ok(HttpStatus.OK);
+		return ResponseDto.okWithoutContent();
 	}
 
 	@PutMapping("/posts/{id}")
-	public void updatePost(@PathVariable int id, @RequestBody PostRequest request) {
+	public ResponseDto<Void> updatePost(@PathVariable int id, @RequestBody PostRequest request) {
 		postService.updatePost(id, request.getTitle());
+		return ResponseDto.okWithoutContent();
 	}
 
 	@GetMapping("/posts/search")
-	public List<Post> search(@RequestParam String keyword) {
-		return postService.searchPost(keyword);
+	public ResponseDto<List<PostResponse>> search(@RequestParam String keyword) {
+		List<PostResponse> postResponses = postService.searchPost(keyword);
+		return ResponseDto.ok(postResponses);
 	}
 }
