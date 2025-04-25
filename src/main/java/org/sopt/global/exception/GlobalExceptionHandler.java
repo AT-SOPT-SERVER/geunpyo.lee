@@ -2,6 +2,7 @@ package org.sopt.global.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,5 +41,21 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ExceptionResponse> handleException() {
 		ExceptionResponse exceptionResponse = ExceptionResponse.of(ExceptionCode.INTERNAL_SERVER_ERROR);
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<ExceptionResponse> handleJsonParse(HttpMessageNotReadableException ex) {
+		Throwable cause = ex.getMostSpecificCause();
+
+		if (cause instanceof BusinessException businessException) {
+			ExceptionCode exceptionCode = businessException.getErrorCode();
+			return ResponseEntity
+				.status(exceptionCode.getStatus())
+				.body(ExceptionResponse.of(exceptionCode));
+		}
+
+		return ResponseEntity
+			.status(HttpStatus.INTERNAL_SERVER_ERROR)
+			.body(ExceptionResponse.of(ExceptionCode.INTERNAL_SERVER_ERROR));
 	}
 }
