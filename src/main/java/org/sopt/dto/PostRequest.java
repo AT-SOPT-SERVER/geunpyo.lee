@@ -2,6 +2,8 @@ package org.sopt.dto;
 
 import static org.sopt.util.StringLengthUtil.*;
 
+import org.sopt.exception.TitleLengthException;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -26,8 +28,7 @@ public class PostRequest {
 
 		int length = getLength(value);
 		if (length > MAX_LENGTH) {
-			throw new IllegalArgumentException(
-				String.format("제목은 %d자를 넘길 수 없습니다. (현재: %d자)", MAX_LENGTH, length));
+			throw new TitleLengthException();
 		}
 	}
 }
