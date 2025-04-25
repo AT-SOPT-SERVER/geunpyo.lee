@@ -1,5 +1,6 @@
-package org.sopt.global.exception;
+package org.sopt.global.config.exception;
 
+import org.sopt.global.config.exception.constant.ExceptionCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
