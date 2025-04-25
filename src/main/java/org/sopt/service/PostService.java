@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.sopt.domain.Post;
 import org.sopt.domain.Title;
+import org.sopt.dto.PostRequest;
 import org.sopt.dto.PostResponse;
 import org.sopt.exception.PostNotFoundException;
 import org.sopt.exception.PostTitleDuplicateException;
@@ -25,8 +26,10 @@ public class PostService {
 	}
 
 	@Transactional
-	public PostResponse createPost(String title) {
-		checkDuplicate(title);
+	public PostResponse createPost(PostRequest postRequest) {
+		String title = postRequest.title();
+
+		verifyTitleNotDuplicated(title);
 		checkLastPostTime();
 
 		Title validTitle = new Title(title);
@@ -60,7 +63,7 @@ public class PostService {
 
 	@Transactional
 	public void updatePost(int postId, String title) {
-		checkDuplicate(title);
+		verifyTitleNotDuplicated(title);
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 		post.updatePost(title);
 	}
@@ -90,7 +93,7 @@ public class PostService {
 		}
 	}
 
-	private void checkDuplicate(String title) {
+	private void verifyTitleNotDuplicated(String title) {
 		if (postRepository.existsByTitle_Content(title)) {
 			throw new PostTitleDuplicateException();
 		}

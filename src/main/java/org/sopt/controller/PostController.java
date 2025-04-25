@@ -25,7 +25,7 @@ public class PostController {
 
 	@PostMapping("/posts")
 	public ResponseDto<PostResponse> createPost(@RequestBody PostRequest postRequest) {
-		PostResponse response = postService.createPost(postRequest.title());
+		PostResponse response = postService.createPost(postRequest);
 		return ResponseDto.created(response);
 	}
 
