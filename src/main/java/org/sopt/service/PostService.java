@@ -35,7 +35,7 @@ public class PostService {
 
 		Title validTitle = new Title(title);
 
-		Post post = new Post(validTitle);
+		Post post = Post.create(validTitle);
 		Post savedPost = postRepository.save(post);
 
 		return PostResponse.from(savedPost);
