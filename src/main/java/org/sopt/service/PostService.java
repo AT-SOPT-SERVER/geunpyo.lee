@@ -1,96 +1,104 @@
 package org.sopt.service;
 
-import static org.sopt.util.IdUtils.generateNextId;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+
 import org.sopt.domain.Post;
+import org.sopt.domain.Title;
+import org.sopt.dto.PostCreateRequest;
+import org.sopt.dto.PostResponse;
+import org.sopt.dto.PostUpdateRequest;
+import org.sopt.exception.PostNotFoundException;
+import org.sopt.exception.PostTitleDuplicateException;
+import org.sopt.exception.RequestCooldownException;
 import org.sopt.repository.PostRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class PostService {
-    private final PostRepository postRepository;
-    private static final Duration POST_CREATION_COOLDOWN = Duration.ofMinutes(3);
+	private static final Duration POST_CREATION_COOLDOWN = Duration.ofMinutes(3);
+	private final PostRepository postRepository;
 
-    public PostService(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+	public PostService(PostRepository postRepository) {
+		this.postRepository = postRepository;
+	}
 
-    public void createPost(String title) {
-        List<Post> allPosts = postRepository.findAll();
-        checkDuplicate(allPosts, title);
-        checkLastPostTime(allPosts);
-        Post post = new Post(generateNextId(allPosts), title);
+	@Transactional
+	public PostResponse createPost(PostCreateRequest postCreateRequest) {
+		String title = postCreateRequest.title();
 
-        postRepository.save(post);
-    }
+		verifyTitleNotDuplicated(title);
+		checkLastPostTime();
 
-    public List<Post> getAllPost() {
-        return postRepository.findAll();
-    }
+		Title validTitle = new Title(title);
 
-    public Post getPostById(int id) {
-        return postRepository.findById(id).orElseGet(null);
-    }
+		Post post = Post.create(validTitle);
+		Post savedPost = postRepository.save(post);
 
-    public boolean deletePostById(int id) {
-        return postRepository.delete(id);
-    }
+		return PostResponse.from(savedPost);
+	}
 
-    public void updatePost(int postId, String title) {
-        List<Post> allPosts = postRepository.findAll();
-        checkDuplicate(allPosts, title);
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다."));
-        post.updatePost(title);
-        postRepository.update(post);
-    }
+	@Transactional(readOnly = true)
+	public List<PostResponse> getAllPost() {
+		List<Post> posts = postRepository.findAll();
 
-    public List<Post> searchPost(String keyword) {
-        if (keyword.length() < 2) {
-            throw new IllegalArgumentException("검색은 두 글자 이상부터 가능합니다.");
-        }
-        return postRepository.findByTitleContaining(keyword);
-    }
+		return posts.stream()
+			.map(PostResponse::from)
+			.toList();
+	}
 
-    private void checkLastPostTime(List<Post> posts) {
+	@Transactional(readOnly = true)
+	public PostResponse getPostById(int id) {
+		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+		return PostResponse.from(post);
+	}
 
-        if (posts.isEmpty()) {
-            return;
-        }
+	@Transactional
+	public void deletePostById(int id) {
+		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+		postRepository.delete(post);
+	}
 
-        Post latestPost = posts.stream()
-                .max(Comparator.comparing(Post::getCreatedAt))
-                .orElse(null);
+	@Transactional
+	public void updatePost(int postId, PostUpdateRequest request) {
+		String title = request.title();
 
-        LocalDateTime now = LocalDateTime.now();
-        Duration sinceLastPost = Duration.between(latestPost.getCreatedAt(), now);
+		verifyTitleNotDuplicated(title);
+		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+		post.updatePost(title);
+	}
 
-        if (sinceLastPost.compareTo(POST_CREATION_COOLDOWN) < 0) {
-            long remainingSeconds = POST_CREATION_COOLDOWN.minus(sinceLastPost).getSeconds();
-            throw new RuntimeException("도배 방지를 위해 " + remainingSeconds + "초 후에 다시 시도해주세요.");
-        }
-    }
+	@Transactional(readOnly = true)
+	public List<PostResponse> searchPost(String keyword) {
+		List<Post> posts = postRepository.findByTitle_ContentContaining(keyword);
 
-    private void checkDuplicate(List<Post> posts, String title) {
-        String normalizedTitle = normalizeTitle(title);
+		return posts.stream()
+			.map(PostResponse::from)
+			.toList();
+	}
 
-        List<Post> duplicates = posts.stream()
-                .filter(post -> normalizeTitle(post.getTitle()).equals(normalizedTitle))
-                .toList();
+	private void checkLastPostTime() {
 
-        if (!duplicates.isEmpty()) {
-            throw new RuntimeException("이미 동일한 내용의 게시물이 있습니다.");
-        }
-    }
+		Optional<Post> latestPost = postRepository.findTopByOrderByCreatedAtDesc();
 
-    private String normalizeTitle(String title) {
-        if (title == null) {
-            return "";
-        }
-        return title.trim()
-                .toLowerCase()
-                .replaceAll("\\s+", " "); // 여러 공백을 하나로 통일
-    }
+		if (latestPost.isEmpty()) {
+			return;
+		}
+
+		LocalDateTime now = LocalDateTime.now();
+		Duration sinceLastPost = Duration.between(latestPost.get().getCreatedAt(), now);
+
+		if (sinceLastPost.compareTo(POST_CREATION_COOLDOWN) < 0) {
+			throw new RequestCooldownException();
+		}
+	}
+
+	private void verifyTitleNotDuplicated(String title) {
+		if (postRepository.existsByTitle_Content(title)) {
+			throw new PostTitleDuplicateException();
+		}
+	}
 }

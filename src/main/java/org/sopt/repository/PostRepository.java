@@ -2,20 +2,14 @@ package org.sopt.repository;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.sopt.domain.Post;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PostRepository {
-    Post save(Post post);
+public interface PostRepository extends JpaRepository<Post, Integer> {
+	List<Post> findByTitle_ContentContaining(String keyword);
 
-    Optional<Post> findById(int id);
+	boolean existsByTitle_Content(String title);
 
-    List<Post> findAll();
-
-    void update(Post post);
-
-    boolean delete(int id);
-
-    boolean isPresent(int id);
-
-    List<Post> findByTitleContaining(String titleKeyword);
+	Optional<Post> findTopByOrderByCreatedAtDesc();
 }
