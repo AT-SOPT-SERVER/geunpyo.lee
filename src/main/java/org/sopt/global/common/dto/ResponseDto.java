@@ -2,6 +2,9 @@ package org.sopt.global.common.dto;
 
 import org.sopt.global.common.constant.SuccessCode;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseDto<T> {
 	private final String code;
 	private final String message;
