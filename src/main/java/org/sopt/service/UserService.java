@@ -18,6 +18,6 @@ public class UserService {
 		User user = User.create(userCreateRequest.name(), userCreateRequest.email());
 		User createdUser = userRepository.save(user);
 
-		return UserResponse.of(createdUser.getName(), createdUser.getEmail());
+		return UserResponse.of(createdUser.getId(), createdUser.getName(), createdUser.getEmail());
 	}
 }
