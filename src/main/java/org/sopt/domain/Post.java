@@ -3,12 +3,15 @@ package org.sopt.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import org.sopt.domain.constant.Tag;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,15 +41,20 @@ public class Post {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	private Post(Title title, User user, Content content) {
+	@Enumerated(value = EnumType.STRING)
+	private Tag tag;
+
+	private Post(Title title, User user, Content content, Tag tag) {
 		this.title = title;
 		this.user = user;
 		this.content = content;
+		this.tag = tag;
 	}
 
-	private Post(Title title, Content content) {
+	private Post(Title title, Content content, Tag tag) {
 		this.title = title;
 		this.content = content;
+		this.tag = tag;
 	}
 
 	private Post(Title title) {
@@ -56,8 +64,8 @@ public class Post {
 	protected Post() {
 	}
 
-	public static Post create(Title title, Content content) {
-		return new Post(title, content);
+	public static Post create(Title title, Content content, Tag tag) {
+		return new Post(title, content, tag);
 	}
 
 	public void updatePost(String title, String content) {
@@ -85,6 +93,10 @@ public class Post {
 		return createdAt;
 	}
 
+	public Tag getTag() {
+		return tag;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -103,5 +115,4 @@ public class Post {
 	public int hashCode() {
 		return Objects.hash(id, title, createdAt);
 	}
-
 }

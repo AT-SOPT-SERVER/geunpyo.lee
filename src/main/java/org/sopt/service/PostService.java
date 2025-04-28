@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.sopt.domain.Content;
 import org.sopt.domain.Post;
 import org.sopt.domain.Title;
+import org.sopt.domain.constant.Tag;
 import org.sopt.dto.PostCreateRequest;
 import org.sopt.dto.PostResponse;
 import org.sopt.dto.PostUpdateRequest;
@@ -36,8 +37,9 @@ public class PostService {
 
 		Title validTitle = new Title(title);
 		Content content = new Content(postCreateRequest.content());
+		Tag tag = postCreateRequest.tag();
 
-		Post post = Post.create(validTitle, content);
+		Post post = Post.create(validTitle, content, tag);
 		Post savedPost = postRepository.save(post);
 
 		return PostResponse.from(savedPost);

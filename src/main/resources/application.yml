@@ -12,3 +12,4 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
         show_sql: true
+  jpa.open-in-view: false
