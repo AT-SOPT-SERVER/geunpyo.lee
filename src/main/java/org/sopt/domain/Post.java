@@ -12,9 +12,13 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "posts")
 public class Post {
 
 	@Id
@@ -27,12 +31,20 @@ public class Post {
 	@Embedded
 	private Title title;
 
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+
+	private Post(Title title, User user) {
+		this.title = title;
+		this.user = user;
+	}
+
 	private Post(Title title) {
 		this.title = title;
 	}
 
-	public Post() {
-
+	protected Post() {
 	}
 
 	public static Post create(Title title) {
