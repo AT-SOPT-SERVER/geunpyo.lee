@@ -3,7 +3,9 @@ package org.sopt.dto;
 import static org.sopt.util.ContentFormatValidateUtil.*;
 import static org.sopt.util.TitleFormatValidateUtil.*;
 
-public record PostUpdateRequest(String title, String content) {
+import org.sopt.domain.constant.Tag;
+
+public record PostUpdateRequest(String title, String content, Tag tag) {
 
 	public PostUpdateRequest {
 		validateTitleFormat(title);
