@@ -23,7 +23,7 @@ public class User {
 		this.email = email;
 	}
 
-	public static User createUser(String name, String email) {
+	public static User create(String name, String email) {
 		return new User(name, email);
 	}
 

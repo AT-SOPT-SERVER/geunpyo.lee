@@ -15,7 +15,7 @@ public class UserService {
 	}
 
 	public UserResponse createUser(UserCreateRequest userCreateRequest) {
-		User user = User.createUser(userCreateRequest.name(), userCreateRequest.email());
+		User user = User.create(userCreateRequest.name(), userCreateRequest.email());
 		User createdUser = userRepository.save(user);
 
 		return UserResponse.of(createdUser.getName(), createdUser.getEmail());
