@@ -22,6 +22,8 @@ public enum ExceptionCode {
 	RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "c4040", "대상이 존재하지 않습니다"),
 	POST_NOT_FOUND(HttpStatus.NOT_FOUND, "c4041", "게시글이 존재하지 않습니다."),
 
+	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "c4042", "사용자가 존재하지 않습니다."),
+
 	METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "c4050", "잘못된 HTTP method 요청입니다."),
 
 	//409

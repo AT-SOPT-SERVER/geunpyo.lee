@@ -44,15 +44,9 @@ public class Post {
 	@Enumerated(value = EnumType.STRING)
 	private Tag tag;
 
-	private Post(Title title, User user, Content content, Tag tag) {
+	private Post(Title title, Content content, Tag tag, User user) {
 		this.title = title;
 		this.user = user;
-		this.content = content;
-		this.tag = tag;
-	}
-
-	private Post(Title title, Content content, Tag tag) {
-		this.title = title;
 		this.content = content;
 		this.tag = tag;
 	}
@@ -64,8 +58,8 @@ public class Post {
 	protected Post() {
 	}
 
-	public static Post create(Title title, Content content, Tag tag) {
-		return new Post(title, content, tag);
+	public static Post create(Title title, Content content, Tag tag, User user) {
+		return new Post(title, content, tag, user);
 	}
 
 	public void updatePost(String title, String content) {
