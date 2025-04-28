@@ -70,7 +70,7 @@ public class PostService {
 
 		verifyTitleNotDuplicated(title);
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-		post.updatePost(title);
+		post.updatePost(title, request.content());
 	}
 
 	@Transactional(readOnly = true)

@@ -60,8 +60,9 @@ public class Post {
 		return new Post(title, content);
 	}
 
-	public void updatePost(String title) {
+	public void updatePost(String title, String content) {
 		this.title = new Title(title);
+		this.content = new Content(content);
 	}
 
 	public int getId() {
