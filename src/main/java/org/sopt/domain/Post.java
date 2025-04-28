@@ -51,20 +51,24 @@ public class Post {
 		return new Post(title);
 	}
 
+	public void updatePost(String title) {
+		this.title = new Title(title);
+	}
+
 	public int getId() {
 		return this.id;
 	}
 
 	public String getTitleContent() {
-		return this.title.getContent();
+		return this.title.content();
+	}
+
+	public User getUser() {
+		return user;
 	}
 
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
-	}
-
-	public void updatePost(String title) {
-		this.title = new Title(title);
 	}
 
 	@Override
@@ -84,14 +88,5 @@ public class Post {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, title, createdAt);
-	}
-
-	@Override
-	public String toString() {
-		return "Post{" +
-			"id=" + id +
-			", title='" + title + '\'' +
-			", createdAt=" + createdAt +
-			'}';
 	}
 }
