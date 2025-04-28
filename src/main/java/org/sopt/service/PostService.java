@@ -25,23 +25,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PostService {
 	private static final Duration POST_CREATION_COOLDOWN = Duration.ofMinutes(3);
+
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
+	private final PostCacheService postCacheService;
 
-	public PostService(PostRepository postRepository, UserRepository userRepository) {
+	public PostService(PostRepository postRepository, UserRepository userRepository,
+		PostCacheService postCacheService) {
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
+		this.postCacheService = postCacheService;
 	}
 
 	@Transactional
 	public PostResponse createPost(int userId, PostCreateRequest postCreateRequest) {
 		User user = findUserById(userId);
 
-		validatePostCreation(postCreateRequest.title());
+		validatePostTitle(postCreateRequest.title());
+
+		checkUserCooldown(userId);
 
 		Post post = buildPostFrom(postCreateRequest, user);
-
 		Post savedPost = postRepository.save(post);
+
+		postCacheService.updateUserLastPostTime(userId, LocalDateTime.now());
 
 		return PostResponse.from(savedPost);
 	}
@@ -71,10 +78,9 @@ public class PostService {
 	public void updatePost(int postId, PostUpdateRequest request) {
 		String title = request.title();
 
-		validatePostCreation(title);
+		validatePostTitle(title);
 
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-		
 		post.updatePost(title, request.content());
 	}
 
@@ -92,11 +98,10 @@ public class PostService {
 			.orElseThrow(UserNotFoundException::new);
 	}
 
-	private void validatePostCreation(String title) {
+	private void validatePostTitle(String title) {
 		if (postRepository.existsByTitle_Content(title)) {
 			throw new PostTitleDuplicateException();
 		}
-		checkLastPostTime();
 	}
 
 	private Post buildPostFrom(PostCreateRequest request, User user) {
@@ -107,16 +112,16 @@ public class PostService {
 		return Post.create(validTitle, content, tag, user);
 	}
 
-	private void checkLastPostTime() {
+	private void checkUserCooldown(int userId) {
+		Optional<LocalDateTime> lastPostTimeOpt = postCacheService.getUserLastPostTime(userId, POST_CREATION_COOLDOWN);
 
-		Optional<Post> latestPost = postRepository.findTopByOrderByCreatedAtDesc();
-
-		if (latestPost.isEmpty()) {
+		if (lastPostTimeOpt.isEmpty()) {
 			return;
 		}
 
+		LocalDateTime lastPostTime = lastPostTimeOpt.get();
 		LocalDateTime now = LocalDateTime.now();
-		Duration sinceLastPost = Duration.between(latestPost.get().getCreatedAt(), now);
+		Duration sinceLastPost = Duration.between(lastPostTime, now);
 
 		if (sinceLastPost.compareTo(POST_CREATION_COOLDOWN) < 0) {
 			throw new RequestCooldownException();
