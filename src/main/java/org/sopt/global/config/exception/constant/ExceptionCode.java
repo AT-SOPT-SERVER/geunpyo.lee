@@ -16,6 +16,7 @@ public enum ExceptionCode {
 	EMPTY_NAME(HttpStatus.BAD_REQUEST, "c40012", "이름이 비어있습니다"),
 	NAME_TOO_LONG(HttpStatus.BAD_REQUEST, "c40022", "이름은 7자를 넘을 수 없습니다."),
 	INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "c40023", "올바르지 않은 이메일 형식입니다."),
+	EMPTY_USER_ID(HttpStatus.BAD_REQUEST, "c40013", "유저ID는 필수입니다."),
 
 	//404
 	NOT_FOUND(HttpStatus.NOT_FOUND, "c4040", "리소스가 존재하지 않습니다."),
