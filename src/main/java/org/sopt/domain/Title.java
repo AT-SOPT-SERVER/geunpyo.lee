@@ -11,7 +11,7 @@ public record Title(
 	String content
 ) {
 	public Title {
-		validate(content);
+		validateTitleFormat(content);
 	}
 
 	@Override

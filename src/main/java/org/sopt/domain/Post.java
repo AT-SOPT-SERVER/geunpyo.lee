@@ -31,13 +31,22 @@ public class Post {
 	@Embedded
 	private Title title;
 
+	@Embedded
+	private Content content;
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	private Post(Title title, User user) {
+	private Post(Title title, User user, Content content) {
 		this.title = title;
 		this.user = user;
+		this.content = content;
+	}
+
+	private Post(Title title, Content content) {
+		this.title = title;
+		this.content = content;
 	}
 
 	private Post(Title title) {
@@ -47,8 +56,8 @@ public class Post {
 	protected Post() {
 	}
 
-	public static Post create(Title title) {
-		return new Post(title);
+	public static Post create(Title title, Content content) {
+		return new Post(title, content);
 	}
 
 	public void updatePost(String title) {
@@ -65,6 +74,10 @@ public class Post {
 
 	public User getUser() {
 		return user;
+	}
+
+	public Content getContent() {
+		return content;
 	}
 
 	public LocalDateTime getCreatedAt() {
@@ -89,4 +102,5 @@ public class Post {
 	public int hashCode() {
 		return Objects.hash(id, title, createdAt);
 	}
+
 }

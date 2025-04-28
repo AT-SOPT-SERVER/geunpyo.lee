@@ -8,7 +8,7 @@ import org.sopt.exception.TitleLengthException;
 public class TitleFormatValidateUtil {
 	private static final int MAX_LENGTH = 30;
 
-	public static void validate(String value) {
+	public static void validateTitleFormat(String value) {
 		if (value == null || value.isBlank()) {
 			throw new TitleEmptyException();
 		}

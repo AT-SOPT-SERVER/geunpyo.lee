@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.sopt.domain.Content;
 import org.sopt.domain.Post;
 import org.sopt.domain.Title;
 import org.sopt.dto.PostCreateRequest;
@@ -34,8 +35,9 @@ public class PostService {
 		checkLastPostTime();
 
 		Title validTitle = new Title(title);
+		Content content = new Content(postCreateRequest.content());
 
-		Post post = Post.create(validTitle);
+		Post post = Post.create(validTitle, content);
 		Post savedPost = postRepository.save(post);
 
 		return PostResponse.from(savedPost);

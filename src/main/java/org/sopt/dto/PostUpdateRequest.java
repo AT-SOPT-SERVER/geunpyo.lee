@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record PostUpdateRequest(String title) {
 	@JsonCreator
 	public PostUpdateRequest(@JsonProperty("title") String title) {
-		validate(title);
+		validateTitleFormat(title);
 		this.title = title;
 	}
 
