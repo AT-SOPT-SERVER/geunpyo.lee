@@ -56,7 +56,7 @@ public class PostService {
 
 	@Transactional(readOnly = true)
 	public List<PostResponse> getAllPost() {
-		List<Post> posts = postRepository.findAll();
+		List<Post> posts = postRepository.findAllOrderByOrderByCreatedAtDesc();
 
 		return posts.stream()
 			.map(PostResponse::from)
