@@ -1,7 +1,6 @@
 package org.sopt.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.sopt.domain.Post;
 import org.sopt.domain.constant.Tag;
@@ -20,8 +19,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 		@Param("tag") Tag tag);
 
 	boolean existsByTitle_Content(String title);
-
-	Optional<Post> findTopByOrderByCreatedAtDesc();
 
 	List<Post> findAllOrderByOrderByCreatedAtDesc();
 }
