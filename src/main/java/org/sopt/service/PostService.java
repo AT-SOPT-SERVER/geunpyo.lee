@@ -41,10 +41,9 @@ public class PostService {
 	@Transactional
 	public PostResponse createPost(int userId, PostCreateRequest postCreateRequest) {
 		User user = findUserById(userId);
+		checkUserCooldown(userId);
 
 		validatePostTitle(postCreateRequest.title());
-
-		checkUserCooldown(userId);
 
 		Post post = buildPostFrom(postCreateRequest, user);
 		Post savedPost = postRepository.save(post);
