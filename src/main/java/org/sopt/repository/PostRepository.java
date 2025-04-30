@@ -10,10 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
-	// PostRepository 인터페이스에 추가
 	@Query("SELECT p FROM Post p WHERE " +
 		"(:tag IS NULL OR p.tag = :tag) AND " +
-		"(:keyword IS NULL OR LOWER(p.title.content) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+		"(:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
 		"LOWER(p.user.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
 	List<Post> findByKeywordAndTagDynamically(
 		@Param("keyword") String keyword,

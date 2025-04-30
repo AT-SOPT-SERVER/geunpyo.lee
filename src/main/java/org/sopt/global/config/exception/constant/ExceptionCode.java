@@ -18,6 +18,8 @@ public enum ExceptionCode {
 	INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "c40023", "올바르지 않은 이메일 형식입니다."),
 	EMPTY_USER_ID(HttpStatus.BAD_REQUEST, "c40013", "유저ID는 필수입니다."),
 
+	INVALID_TAG(HttpStatus.BAD_REQUEST, "c40024", "올바르지 않은 태그입니다."),
+
 	//404
 	NOT_FOUND(HttpStatus.NOT_FOUND, "c4040", "리소스가 존재하지 않습니다."),
 	RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "c4040", "대상이 존재하지 않습니다"),
