@@ -2,6 +2,7 @@ package org.sopt.controller;
 
 import java.util.List;
 
+import org.sopt.domain.constant.Tag;
 import org.sopt.dto.PostCreateRequest;
 import org.sopt.dto.PostDetailResponse;
 import org.sopt.dto.PostResponse;
@@ -56,8 +57,9 @@ public class PostController {
 	}
 
 	@GetMapping("/posts/search")
-	public ResponseDto<List<PostResponse>> search(@RequestParam String keyword) {
-		List<PostResponse> postResponses = postService.searchPost(keyword);
+	public ResponseDto<List<PostResponse>> search(@RequestParam(required = false) String keyword,
+		@RequestParam(required = false) Tag tag) {
+		List<PostResponse> postResponses = postService.searchPost(keyword, tag);
 		return ResponseDto.ok(postResponses);
 	}
 }

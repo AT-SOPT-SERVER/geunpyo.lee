@@ -86,8 +86,19 @@ public class PostService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<PostResponse> searchPost(String keyword) {
-		List<Post> posts = postRepository.findByTitle_ContentContaining(keyword);
+	public List<PostResponse> searchPost(String keyword, Tag tag) {
+		List<Post> posts;
+
+		if (keyword == null && tag == null) {
+			posts = postRepository.findAll();
+		} else if (keyword == null) {
+			posts = postRepository.findAllByTag(tag);
+		} else if (tag == null) {
+			posts = postRepository.findByTitle_ContentContainingOrUser_NameContaining(keyword, keyword);
+		} else {
+			posts = postRepository.findByTagAndTitle_ContentContainingOrTagAndUser_NameContaining(
+				tag, keyword, tag, keyword);
+		}
 
 		return posts.stream()
 			.map(PostResponse::from)
