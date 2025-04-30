@@ -64,14 +64,14 @@ public class PostService {
 	}
 
 	@Transactional(readOnly = true)
-	public PostDetailResponse getPostById(int id) {
-		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+	public PostDetailResponse getPostById(int postId) {
+		Post post = findPostById(postId);
 		return PostDetailResponse.from(post);
 	}
 
 	@Transactional
-	public void deletePostById(int id) {
-		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+	public void deletePostById(int postId) {
+		Post post = findPostById(postId);
 		postRepository.delete(post);
 	}
 
@@ -81,7 +81,7 @@ public class PostService {
 
 		validatePostTitle(title);
 
-		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+		Post post = findPostById(postId);
 		post.updatePost(title, request.content());
 	}
 
@@ -97,6 +97,10 @@ public class PostService {
 	private User findUserById(int userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(UserNotFoundException::new);
+	}
+
+	private Post findPostById(int postId) {
+		return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 	}
 
 	private void validatePostTitle(String title) {
