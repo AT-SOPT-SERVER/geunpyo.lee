@@ -13,7 +13,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 	@Query("SELECT p FROM Post p WHERE " +
 		"(:tag IS NULL OR p.tag = :tag) AND " +
 		"(:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-		"LOWER(p.user.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+		"LOWER(p.user.name) LIKE LOWER(CONCAT('%', :keyword, '%')))" +
+		"ORDER BY p.createdAt DESC ")
 	List<Post> findByKeywordAndTagDynamically(
 		@Param("keyword") String keyword,
 		@Param("tag") Tag tag);
