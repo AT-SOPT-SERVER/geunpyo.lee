@@ -71,7 +71,7 @@ public class Post {
 		return this.id;
 	}
 
-	public String getTitleContent() {
+	public String getTitle() {
 		return this.title.content();
 	}
 
@@ -79,8 +79,8 @@ public class Post {
 		return user;
 	}
 
-	public Content getContent() {
-		return content;
+	public String getContent() {
+		return content.value();
 	}
 
 	public LocalDateTime getCreatedAt() {

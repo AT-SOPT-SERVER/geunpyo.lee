@@ -3,6 +3,7 @@ package org.sopt.controller;
 import java.util.List;
 
 import org.sopt.dto.PostCreateRequest;
+import org.sopt.dto.PostDetailResponse;
 import org.sopt.dto.PostResponse;
 import org.sopt.dto.PostUpdateRequest;
 import org.sopt.global.common.dto.ResponseDto;
@@ -38,7 +39,7 @@ public class PostController {
 	}
 
 	@GetMapping("/posts/{id}")
-	public ResponseDto<PostResponse> getPostById(@PathVariable int id) {
+	public ResponseDto<PostDetailResponse> getPostById(@PathVariable int id) {
 		return ResponseDto.ok(postService.getPostById(id));
 	}
 

@@ -11,6 +11,7 @@ import org.sopt.domain.Title;
 import org.sopt.domain.User;
 import org.sopt.domain.constant.Tag;
 import org.sopt.dto.PostCreateRequest;
+import org.sopt.dto.PostDetailResponse;
 import org.sopt.dto.PostResponse;
 import org.sopt.dto.PostUpdateRequest;
 import org.sopt.exception.PostNotFoundException;
@@ -63,9 +64,9 @@ public class PostService {
 	}
 
 	@Transactional(readOnly = true)
-	public PostResponse getPostById(int id) {
+	public PostDetailResponse getPostById(int id) {
 		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-		return PostResponse.from(post);
+		return PostDetailResponse.from(post);
 	}
 
 	@Transactional
