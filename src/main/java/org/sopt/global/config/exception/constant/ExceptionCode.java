@@ -20,6 +20,9 @@ public enum ExceptionCode {
 
 	INVALID_TAG(HttpStatus.BAD_REQUEST, "c40024", "올바르지 않은 태그입니다."),
 
+	//403
+	ACCESS_DENIED(HttpStatus.FORBIDDEN, "c4031", "작성자만 게시물을 변경할 수 있습니다."),
+
 	//404
 	NOT_FOUND(HttpStatus.NOT_FOUND, "c4040", "리소스가 존재하지 않습니다."),
 	RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "c4040", "대상이 존재하지 않습니다"),

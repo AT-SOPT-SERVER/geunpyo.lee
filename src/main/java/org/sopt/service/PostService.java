@@ -14,6 +14,7 @@ import org.sopt.dto.PostCreateRequest;
 import org.sopt.dto.PostDetailResponse;
 import org.sopt.dto.PostResponse;
 import org.sopt.dto.PostUpdateRequest;
+import org.sopt.exception.AccessDeniedException;
 import org.sopt.exception.PostNotFoundException;
 import org.sopt.exception.PostTitleDuplicateException;
 import org.sopt.exception.RequestCooldownException;
@@ -69,18 +70,25 @@ public class PostService {
 	}
 
 	@Transactional
-	public void deletePostById(int postId) {
+	public void deletePostById(int userId, int postId) {
+		User user = findUserById(userId);
 		Post post = findPostById(postId);
+
+		checkAuthentication(user, post);
+		
 		postRepository.delete(post);
 	}
 
 	@Transactional
-	public void updatePost(int postId, PostUpdateRequest request) {
+	public void updatePost(int userId, int postId, PostUpdateRequest request) {
+		Post post = findPostById(postId);
+		User user = findUserById(userId);
+
+		checkAuthentication(user, post);
+
 		String title = request.title();
 
 		validatePostTitle(title);
-
-		Post post = findPostById(postId);
 		post.updatePost(title, request.content());
 	}
 
@@ -129,6 +137,12 @@ public class PostService {
 
 		if (sinceLastPost.compareTo(POST_CREATION_COOLDOWN) < 0) {
 			throw new RequestCooldownException();
+		}
+	}
+
+	private void checkAuthentication(User user, Post post) {
+		if (post.getUser().equals(user)) {
+			throw new AccessDeniedException();
 		}
 	}
 }

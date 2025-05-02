@@ -45,14 +45,15 @@ public class PostController {
 	}
 
 	@DeleteMapping("/posts/{id}")
-	public ResponseDto<Void> deletePostById(@PathVariable int id) {
-		postService.deletePostById(id);
+	public ResponseDto<Void> deletePostById(@RequestHeader Integer userId, @PathVariable int id) {
+		postService.deletePostById(userId, id);
 		return ResponseDto.okWithoutContent();
 	}
 
 	@PutMapping("/posts/{id}")
-	public ResponseDto<Void> updatePost(@PathVariable int id, @RequestBody PostUpdateRequest request) {
-		postService.updatePost(id, request);
+	public ResponseDto<Void> updatePost(@RequestHeader Integer userId, @PathVariable int id,
+		@RequestBody PostUpdateRequest request) {
+		postService.updatePost(userId, id, request);
 		return ResponseDto.okWithoutContent();
 	}
 
