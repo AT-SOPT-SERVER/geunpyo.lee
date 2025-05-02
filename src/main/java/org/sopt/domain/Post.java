@@ -3,18 +3,25 @@ package org.sopt.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import org.sopt.domain.constant.Tag;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "posts")
 public class Post {
 
 	@Id
@@ -27,32 +34,61 @@ public class Post {
 	@Embedded
 	private Title title;
 
+	@Embedded
+	private Content content;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+
+	@Enumerated(value = EnumType.STRING)
+	private Tag tag;
+
+	private Post(Title title, Content content, Tag tag, User user) {
+		this.title = title;
+		this.user = user;
+		this.content = content;
+		this.tag = tag;
+	}
+
 	private Post(Title title) {
 		this.title = title;
 	}
 
-	public Post() {
-
+	protected Post() {
 	}
 
-	public static Post create(Title title) {
-		return new Post(title);
+	public static Post create(Title title, Content content, Tag tag, User user) {
+		return new Post(title, content, tag, user);
+	}
+
+	public void updatePost(String title, String content) {
+		this.title = new Title(title);
+		this.content = new Content(content);
 	}
 
 	public int getId() {
 		return this.id;
 	}
 
-	public String getTitleContent() {
-		return this.title.getContent();
+	public String getTitle() {
+		return this.title.content();
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public String getContent() {
+		return content.value();
 	}
 
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void updatePost(String title) {
-		this.title = new Title(title);
+	public Tag getTag() {
+		return tag;
 	}
 
 	@Override
@@ -72,14 +108,5 @@ public class Post {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, title, createdAt);
-	}
-
-	@Override
-	public String toString() {
-		return "Post{" +
-			"id=" + id +
-			", title='" + title + '\'' +
-			", createdAt=" + createdAt +
-			'}';
 	}
 }

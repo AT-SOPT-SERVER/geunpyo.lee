@@ -1,16 +1,15 @@
 package org.sopt.dto;
 
+import static org.sopt.util.ContentFormatValidateUtil.*;
 import static org.sopt.util.TitleFormatValidateUtil.*;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.sopt.domain.constant.Tag;
 
-public record PostCreateRequest(String title) {
+public record PostCreateRequest(String title, String content, Tag tag) {
 
-	@JsonCreator
-	public PostCreateRequest(@JsonProperty("title") String title) {
-		validate(title);
-		this.title = title;
+	public PostCreateRequest {
+		validateTitleFormat(title);
+		validateContentFormat(content);
 	}
 }
 
