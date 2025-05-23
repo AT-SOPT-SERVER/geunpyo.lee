@@ -5,45 +5,58 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.sopt.domain.Content;
 import org.sopt.domain.Post;
 import org.sopt.domain.Title;
+import org.sopt.domain.User;
+import org.sopt.domain.constant.Tag;
 import org.sopt.dto.PostCreateRequest;
+import org.sopt.dto.PostDetailResponse;
 import org.sopt.dto.PostResponse;
 import org.sopt.dto.PostUpdateRequest;
+import org.sopt.exception.AccessDeniedException;
 import org.sopt.exception.PostNotFoundException;
 import org.sopt.exception.PostTitleDuplicateException;
 import org.sopt.exception.RequestCooldownException;
+import org.sopt.exception.UserNotFoundException;
 import org.sopt.repository.PostRepository;
+import org.sopt.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostService {
 	private static final Duration POST_CREATION_COOLDOWN = Duration.ofMinutes(3);
-	private final PostRepository postRepository;
 
-	public PostService(PostRepository postRepository) {
+	private final PostRepository postRepository;
+	private final UserRepository userRepository;
+	private final PostCacheService postCacheService;
+
+	public PostService(PostRepository postRepository, UserRepository userRepository,
+		PostCacheService postCacheService) {
 		this.postRepository = postRepository;
+		this.userRepository = userRepository;
+		this.postCacheService = postCacheService;
 	}
 
 	@Transactional
-	public PostResponse createPost(PostCreateRequest postCreateRequest) {
-		String title = postCreateRequest.title();
+	public PostResponse createPost(int userId, PostCreateRequest postCreateRequest) {
+		User user = findUserById(userId);
+		checkUserCooldown(userId);
 
-		verifyTitleNotDuplicated(title);
-		checkLastPostTime();
+		validatePostTitle(postCreateRequest.title());
 
-		Title validTitle = new Title(title);
-
-		Post post = Post.create(validTitle);
+		Post post = buildPostFrom(postCreateRequest, user);
 		Post savedPost = postRepository.save(post);
+
+		postCacheService.updateUserLastPostTime(userId, LocalDateTime.now());
 
 		return PostResponse.from(savedPost);
 	}
 
 	@Transactional(readOnly = true)
 	public List<PostResponse> getAllPost() {
-		List<Post> posts = postRepository.findAll();
+		List<Post> posts = postRepository.findAllOrderByOrderByCreatedAtDesc();
 
 		return posts.stream()
 			.map(PostResponse::from)
@@ -51,54 +64,85 @@ public class PostService {
 	}
 
 	@Transactional(readOnly = true)
-	public PostResponse getPostById(int id) {
-		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-		return PostResponse.from(post);
+	public PostDetailResponse getPostById(int postId) {
+		Post post = findPostById(postId);
+		return PostDetailResponse.from(post);
 	}
 
 	@Transactional
-	public void deletePostById(int id) {
-		Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+	public void deletePostById(int userId, int postId) {
+		User user = findUserById(userId);
+		Post post = findPostById(postId);
+
+		checkAuthentication(user, post);
+		
 		postRepository.delete(post);
 	}
 
 	@Transactional
-	public void updatePost(int postId, PostUpdateRequest request) {
+	public void updatePost(int userId, int postId, PostUpdateRequest request) {
+		Post post = findPostById(postId);
+		User user = findUserById(userId);
+
+		checkAuthentication(user, post);
+
 		String title = request.title();
 
-		verifyTitleNotDuplicated(title);
-		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-		post.updatePost(title);
+		validatePostTitle(title);
+		post.updatePost(title, request.content());
 	}
 
 	@Transactional(readOnly = true)
-	public List<PostResponse> searchPost(String keyword) {
-		List<Post> posts = postRepository.findByTitle_ContentContaining(keyword);
+	public List<PostResponse> searchPost(String keyword, Tag tag) {
+		List<Post> posts = postRepository.findByKeywordAndTagDynamically(keyword, tag);
 
 		return posts.stream()
 			.map(PostResponse::from)
 			.toList();
 	}
 
-	private void checkLastPostTime() {
+	private User findUserById(int userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(UserNotFoundException::new);
+	}
 
-		Optional<Post> latestPost = postRepository.findTopByOrderByCreatedAtDesc();
+	private Post findPostById(int postId) {
+		return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+	}
 
-		if (latestPost.isEmpty()) {
+	private void validatePostTitle(String title) {
+		if (postRepository.existsByTitle_Content(title)) {
+			throw new PostTitleDuplicateException();
+		}
+	}
+
+	private Post buildPostFrom(PostCreateRequest request, User user) {
+		Title validTitle = new Title(request.title());
+		Content content = new Content(request.content());
+		Tag tag = request.tag();
+
+		return Post.create(validTitle, content, tag, user);
+	}
+
+	private void checkUserCooldown(int userId) {
+		Optional<LocalDateTime> lastPostTimeOpt = postCacheService.getUserLastPostTime(userId, POST_CREATION_COOLDOWN);
+
+		if (lastPostTimeOpt.isEmpty()) {
 			return;
 		}
 
+		LocalDateTime lastPostTime = lastPostTimeOpt.get();
 		LocalDateTime now = LocalDateTime.now();
-		Duration sinceLastPost = Duration.between(latestPost.get().getCreatedAt(), now);
+		Duration sinceLastPost = Duration.between(lastPostTime, now);
 
 		if (sinceLastPost.compareTo(POST_CREATION_COOLDOWN) < 0) {
 			throw new RequestCooldownException();
 		}
 	}
 
-	private void verifyTitleNotDuplicated(String title) {
-		if (postRepository.existsByTitle_Content(title)) {
-			throw new PostTitleDuplicateException();
+	private void checkAuthentication(User user, Post post) {
+		if (post.getUser().equals(user)) {
+			throw new AccessDeniedException();
 		}
 	}
 }

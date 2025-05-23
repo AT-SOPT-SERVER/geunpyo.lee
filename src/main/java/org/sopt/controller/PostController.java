@@ -2,7 +2,9 @@ package org.sopt.controller;
 
 import java.util.List;
 
+import org.sopt.domain.constant.Tag;
 import org.sopt.dto.PostCreateRequest;
+import org.sopt.dto.PostDetailResponse;
 import org.sopt.dto.PostResponse;
 import org.sopt.dto.PostUpdateRequest;
 import org.sopt.global.common.dto.ResponseDto;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,8 +28,9 @@ public class PostController {
 	}
 
 	@PostMapping("/posts")
-	public ResponseDto<PostResponse> createPost(@RequestBody PostCreateRequest postCreateRequest) {
-		PostResponse response = postService.createPost(postCreateRequest);
+	public ResponseDto<PostResponse> createPost(@RequestHeader Integer userId,
+		@RequestBody PostCreateRequest postCreateRequest) {
+		PostResponse response = postService.createPost(userId, postCreateRequest);
 		return ResponseDto.created(response);
 	}
 
@@ -36,25 +40,27 @@ public class PostController {
 	}
 
 	@GetMapping("/posts/{id}")
-	public ResponseDto<PostResponse> getPostById(@PathVariable int id) {
+	public ResponseDto<PostDetailResponse> getPostById(@PathVariable int id) {
 		return ResponseDto.ok(postService.getPostById(id));
 	}
 
 	@DeleteMapping("/posts/{id}")
-	public ResponseDto<Void> deletePostById(@PathVariable int id) {
-		postService.deletePostById(id);
+	public ResponseDto<Void> deletePostById(@RequestHeader Integer userId, @PathVariable int id) {
+		postService.deletePostById(userId, id);
 		return ResponseDto.okWithoutContent();
 	}
 
 	@PutMapping("/posts/{id}")
-	public ResponseDto<Void> updatePost(@PathVariable int id, @RequestBody PostUpdateRequest request) {
-		postService.updatePost(id, request);
+	public ResponseDto<Void> updatePost(@RequestHeader Integer userId, @PathVariable int id,
+		@RequestBody PostUpdateRequest request) {
+		postService.updatePost(userId, id, request);
 		return ResponseDto.okWithoutContent();
 	}
 
 	@GetMapping("/posts/search")
-	public ResponseDto<List<PostResponse>> search(@RequestParam String keyword) {
-		List<PostResponse> postResponses = postService.searchPost(keyword);
+	public ResponseDto<List<PostResponse>> search(@RequestParam(required = false) String keyword,
+		@RequestParam(required = false) Tag tag) {
+		List<PostResponse> postResponses = postService.searchPost(keyword, tag);
 		return ResponseDto.ok(postResponses);
 	}
 }
