@@ -30,7 +30,7 @@ public class PostController {
 	@PostMapping("/posts")
 	public ResponseDto<PostResponse> createPost(@RequestHeader Integer userId,
 		@RequestBody PostCreateRequest postCreateRequest) {
-		PostResponse response = postService.createPost(userId, postCreateRequest);
+		PostResponse response = postService.createPost(userId, postCreateRequest.toCommand());
 		return ResponseDto.created(response);
 	}
 
