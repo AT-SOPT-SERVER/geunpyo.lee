@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.sopt.post.controller.response.PostResponse;
 import org.sopt.post.domain.Post;
+import org.sopt.post.exception.InvalidTagCountException;
 import org.sopt.post.exception.PostNotFoundException;
 import org.sopt.post.repository.PostRepository;
 import org.sopt.post.service.request.PostCreateCommand;
@@ -35,7 +36,7 @@ class PostServiceTest {
 
 	@DisplayName("사용자는 게시글을 작성할 수 있다.")
 	@Test
-	void test() {
+	void createPost() {
 		//given
 		User user = User.create("test", "test@gmail.com");
 		User savedUser = userRepository.save(user);
@@ -57,6 +58,26 @@ class PostServiceTest {
 		assertThat(post.getContent()).isEqualTo(command.content());
 		assertThat(post.getTags()).hasSize(2)
 			.contains(BE, ETC);
+	}
+
+	@DisplayName("사용자는 게시글 생성시 태그를 최대 두개만 지정할 수 있다.")
+	@Test
+	void createPostTagMaxTwo() {
+		//given
+		User user = User.create("test", "test@gmail.com");
+		User savedUser = userRepository.save(user);
+
+		PostCreateCommand command = new PostCreateCommand(
+			"testtitle",
+			"testcontent",
+			List.of(BE, ETC, DB)
+		);
+
+		//when & then
+		assertThatThrownBy(() -> postService.createPost(savedUser.getId(), command))
+			.isInstanceOf(InvalidTagCountException.class)
+			.hasMessage("태그는 2개를 넘게 설정할 수 없습니다.");
+
 	}
 
 }
