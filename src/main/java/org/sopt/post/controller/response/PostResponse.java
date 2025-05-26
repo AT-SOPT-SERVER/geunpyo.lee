@@ -6,7 +6,7 @@ import org.sopt.post.domain.Post;
 import org.sopt.post.domain.constant.Tag;
 
 public record PostResponse(
-	int postId,
+	long postId,
 	String title,
 	String username,
 	String content,

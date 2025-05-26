@@ -41,7 +41,7 @@ public class PostService {
 	}
 
 	@Transactional
-	public PostResponse createPost(int userId, PostCreateCommand command) {
+	public PostResponse createPost(long userId, PostCreateCommand command) {
 		User user = findUserById(userId);
 		checkUserCooldown(userId);
 
@@ -106,12 +106,12 @@ public class PostService {
 			.toList();
 	}
 
-	private User findUserById(int userId) {
+	private User findUserById(long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(UserNotFoundException::new);
 	}
 
-	private Post findPostById(int postId) {
+	private Post findPostById(long postId) {
 		return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 	}
 
@@ -131,7 +131,7 @@ public class PostService {
 		return Post.create(validTitle, validContent, tags, user);
 	}
 
-	private void checkUserCooldown(int userId) {
+	private void checkUserCooldown(long userId) {
 		Optional<LocalDateTime> lastPostTimeOpt = postCacheService.getUserLastPostTime(userId, POST_CREATION_COOLDOWN);
 
 		if (lastPostTimeOpt.isEmpty()) {

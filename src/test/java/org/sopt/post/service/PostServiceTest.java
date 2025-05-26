@@ -51,7 +51,7 @@ class PostServiceTest {
 		PostResponse response = postService.createPost(savedUser.getId(), command);
 
 		//then
-		int postId = response.postId();
+		long postId = response.postId();
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
 		assertThat(post.getTitle()).isEqualTo(command.title());

@@ -18,7 +18,7 @@ public class PostCacheService {
 		this.cacheManager = cacheManager;
 	}
 
-	public Optional<LocalDateTime> getUserLastPostTime(int userId, Duration coolTime) {
+	public Optional<LocalDateTime> getUserLastPostTime(long userId, Duration coolTime) {
 		Cache cache = cacheManager.getCache(USER_POST_TIME_CACHE);
 		if (cache == null) {
 			return Optional.empty();
@@ -40,7 +40,7 @@ public class PostCacheService {
 		return Optional.of(lastPostTime);
 	}
 
-	public void updateUserLastPostTime(int userId, LocalDateTime time) {
+	public void updateUserLastPostTime(long userId, LocalDateTime time) {
 		Cache cache = cacheManager.getCache(USER_POST_TIME_CACHE);
 		if (cache != null) {
 			cache.put(userId, time);

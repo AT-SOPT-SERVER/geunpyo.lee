@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import org.sopt.user.domain.User;
 import org.sopt.post.domain.constant.Tag;
+import org.sopt.user.domain.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -29,7 +29,7 @@ public class Post {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 
 	@CreatedDate
 	private LocalDateTime createdAt;
@@ -76,7 +76,7 @@ public class Post {
 		this.content = new Content(content);
 	}
 
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
