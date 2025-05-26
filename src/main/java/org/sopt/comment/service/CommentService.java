@@ -1,5 +1,6 @@
 package org.sopt.comment.service;
 
+import org.sopt.comment.controller.response.CommentResponse;
 import org.sopt.comment.domain.Comment;
 import org.sopt.comment.repository.CommentRepository;
 import org.sopt.comment.service.exception.CommentNotFoundException;
@@ -28,13 +29,15 @@ public class CommentService {
 	}
 
 	@Transactional
-	public Comment createComment(long userId, CommentCreateCommand command) {
+	public CommentResponse createComment(long userId, long postId, Long parentId, CommentCreateCommand command) {
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-		Post post = postRepository.findById(command.postId()).orElseThrow(PostNotFoundException::new);
+		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
-		Comment comment = buildComment(user, post, command.parentId(), command.content());
+		Comment comment = buildComment(user, post, parentId, command.content());
 
-		return commentRepository.save(comment);
+		Comment savedComment = commentRepository.save(comment);
+
+		return CommentResponse.from(savedComment);
 	}
 
 	private Comment buildComment(User user, Post post, Long parentId, String content) {

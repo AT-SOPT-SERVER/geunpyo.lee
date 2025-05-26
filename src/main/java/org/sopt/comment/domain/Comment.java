@@ -43,6 +43,8 @@ public class Comment {
 	@JoinColumn(name = "parent_id")
 	private Comment parent;
 
+	private long likes;
+
 	@CreatedDate
 	private LocalDateTime createdAt;
 
@@ -50,11 +52,12 @@ public class Comment {
 	}
 
 	@Builder
-	private Comment(String content, User user, Post post, Comment parent) {
+	private Comment(String content, User user, Post post, Comment parent, long likes) {
 		this.content = content;
 		this.user = user;
 		this.post = post;
 		this.parent = parent;
+		this.likes = 1;
 	}
 
 	public static Comment createWithoutParent(String content, User user, Post post) {
