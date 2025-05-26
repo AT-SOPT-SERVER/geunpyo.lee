@@ -5,13 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.sopt.user.domain.User;
-import org.sopt.post.exception.AccessDeniedException;
-import org.sopt.post.exception.PostNotFoundException;
-import org.sopt.post.exception.PostTitleDuplicateException;
-import org.sopt.post.exception.RequestCooldownException;
-import org.sopt.user.exception.UserNotFoundException;
-import org.sopt.post.controller.request.PostCreateRequest;
 import org.sopt.post.controller.request.PostUpdateRequest;
 import org.sopt.post.controller.response.PostDetailResponse;
 import org.sopt.post.controller.response.PostResponse;
@@ -19,7 +12,14 @@ import org.sopt.post.domain.Content;
 import org.sopt.post.domain.Post;
 import org.sopt.post.domain.Title;
 import org.sopt.post.domain.constant.Tag;
+import org.sopt.post.exception.AccessDeniedException;
+import org.sopt.post.exception.PostNotFoundException;
+import org.sopt.post.exception.PostTitleDuplicateException;
+import org.sopt.post.exception.RequestCooldownException;
 import org.sopt.post.repository.PostRepository;
+import org.sopt.post.service.request.PostCreateCommand;
+import org.sopt.user.domain.User;
+import org.sopt.user.exception.UserNotFoundException;
 import org.sopt.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,13 +40,13 @@ public class PostService {
 	}
 
 	@Transactional
-	public PostResponse createPost(int userId, PostCreateRequest postCreateRequest) {
+	public PostResponse createPost(int userId, PostCreateCommand command) {
 		User user = findUserById(userId);
 		checkUserCooldown(userId);
 
-		validatePostTitle(postCreateRequest.title());
+		validatePostTitle(command.title());
 
-		Post post = buildPostFrom(postCreateRequest, user);
+		Post post = buildPostFrom(command.title(), command.content(), command.tags(), user);
 		Post savedPost = postRepository.save(post);
 
 		postCacheService.updateUserLastPostTime(userId, LocalDateTime.now());
@@ -116,12 +116,11 @@ public class PostService {
 		}
 	}
 
-	private Post buildPostFrom(PostCreateRequest request, User user) {
-		Title validTitle = new Title(request.title());
-		Content content = new Content(request.content());
-		List<Tag> tags = request.tags();
+	private Post buildPostFrom(String title, String content, List<Tag> tags, User user) {
+		Title validTitle = new Title(title);
+		Content validContent = new Content(content);
 
-		return Post.create(validTitle, content, tags, user);
+		return Post.create(validTitle, validContent, tags, user);
 	}
 
 	private void checkUserCooldown(int userId) {
