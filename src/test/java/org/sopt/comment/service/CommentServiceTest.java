@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.sopt.comment.controller.response.CommentResponse;
 import org.sopt.comment.domain.Comment;
 import org.sopt.comment.repository.CommentRepository;
 import org.sopt.comment.service.request.CommentCreateCommand;
@@ -56,19 +57,21 @@ class CommentServiceTest {
 		Post savedPost = postRepository.save(post);
 
 		CommentCreateCommand command = new CommentCreateCommand(
-			null,
-			post.getId(),
 			"testComment"
 		);
 
 		//when
 
-		Comment comment = commentService.createComment(savedUser2.getId(), command);
+		CommentResponse response = commentService.createComment(savedUser2.getId(), savedPost.getId(), null, command);
 
 		//then
+		Comment comment = commentRepository.findById(response.commentId()).get();
+
 		assertThat(comment.getUser().getId()).isEqualTo(savedUser2.getId());
 		assertThat(comment.getPost().getId()).isEqualTo(savedPost.getId());
+		assertThat(comment.getContent()).isEqualTo(command.content());
 		assertThat(comment.getParent()).isNull();
+		assertThat(comment.getLikes()).isEqualTo(1);
 
 	}
 
@@ -99,19 +102,21 @@ class CommentServiceTest {
 		Comment savedParent = commentRepository.save(parent);
 
 		CommentCreateCommand command = new CommentCreateCommand(
-			savedParent.getId(),
-			post.getId(),
 			"child"
 		);
 
 		//when
-
-		Comment comment = commentService.createComment(savedUser2.getId(), command);
+		CommentResponse response = commentService.createComment(savedUser2.getId(), savedPost.getId(),
+			savedPost.getId(), command);
 
 		//then
+		Comment comment = commentRepository.findById(response.commentId()).get();
+
 		assertThat(comment.getUser().getId()).isEqualTo(savedUser2.getId());
 		assertThat(comment.getPost().getId()).isEqualTo(savedPost.getId());
 		assertThat(comment.getParent().getId()).isEqualTo(savedParent.getId());
+		assertThat(comment.getContent()).isEqualTo(command.content());
+		assertThat(comment.getLikes()).isEqualTo(1);
 
 	}
 
