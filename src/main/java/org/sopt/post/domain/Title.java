@@ -15,8 +15,7 @@ public class Title {
 	@Column(name = "title", nullable = false)
 	private String content;
 
-	public Title(
-		String content) {
+	public Title(String content) {
 		validateTitleFormat(content);
 		this.content = content;
 	}

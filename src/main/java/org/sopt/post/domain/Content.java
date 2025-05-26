@@ -15,8 +15,7 @@ public final class Content {
 	@Column(name = "content", nullable = false)
 	private String value;
 
-	public Content(
-		String value) {
+	public Content(String value) {
 		validateContentFormat(value);
 		this.value = value;
 	}
