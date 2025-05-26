@@ -19,6 +19,7 @@ public enum ExceptionCode {
 	EMPTY_USER_ID(HttpStatus.BAD_REQUEST, "c40013", "유저ID는 필수입니다."),
 
 	INVALID_TAG(HttpStatus.BAD_REQUEST, "c40024", "올바르지 않은 태그입니다."),
+	INVALID_TAG_COUNT(HttpStatus.BAD_REQUEST, "c40024", "태그는 2개를 넘게 설정할 수 없습니다."),
 
 	//403
 	ACCESS_DENIED(HttpStatus.FORBIDDEN, "c4031", "작성자만 게시물을 변경할 수 있습니다."),

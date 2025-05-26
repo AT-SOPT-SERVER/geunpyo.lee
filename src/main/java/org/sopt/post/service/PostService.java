@@ -13,6 +13,7 @@ import org.sopt.post.domain.Post;
 import org.sopt.post.domain.Title;
 import org.sopt.post.domain.constant.Tag;
 import org.sopt.post.exception.AccessDeniedException;
+import org.sopt.post.exception.InvalidTagCountException;
 import org.sopt.post.exception.PostNotFoundException;
 import org.sopt.post.exception.PostTitleDuplicateException;
 import org.sopt.post.exception.RequestCooldownException;
@@ -44,14 +45,18 @@ public class PostService {
 		User user = findUserById(userId);
 		checkUserCooldown(userId);
 
-		validatePostTitle(command.title());
-
 		Post post = buildPostFrom(command.title(), command.content(), command.tags(), user);
 		Post savedPost = postRepository.save(post);
 
 		postCacheService.updateUserLastPostTime(userId, LocalDateTime.now());
 
 		return PostResponse.from(savedPost);
+	}
+
+	private void validateTagCount(List<Tag> tags) {
+		if (tags.size() > 2) {
+			throw new InvalidTagCountException();
+		}
 	}
 
 	@Transactional(readOnly = true)
@@ -117,6 +122,9 @@ public class PostService {
 	}
 
 	private Post buildPostFrom(String title, String content, List<Tag> tags, User user) {
+		validatePostTitle(title);
+		validateTagCount(tags);
+
 		Title validTitle = new Title(title);
 		Content validContent = new Content(content);
 
