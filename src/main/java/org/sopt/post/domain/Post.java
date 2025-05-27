@@ -47,12 +47,15 @@ public class Post {
 	@Enumerated(value = EnumType.STRING)
 	private List<Tag> tags;
 
+	private long likes;
+
 	@Builder
-	private Post(Title title, Content content, List<Tag> tags, User user) {
+	private Post(Title title, Content content, List<Tag> tags, User user, long likes) {
 		this.title = title;
 		this.user = user;
 		this.content = content;
 		this.tags = tags;
+		this.likes = likes;
 	}
 
 	private Post(Title title) {
@@ -68,6 +71,7 @@ public class Post {
 			.content(content)
 			.tags(tags)
 			.user(user)
+			.likes(0)
 			.build();
 	}
 
@@ -117,5 +121,9 @@ public class Post {
 
 	public List<Tag> getTags() {
 		return tags;
+	}
+
+	public long getLikes() {
+		return this.likes;
 	}
 }
