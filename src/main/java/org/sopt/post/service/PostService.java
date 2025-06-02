@@ -69,13 +69,13 @@ public class PostService {
 	}
 
 	@Transactional(readOnly = true)
-	public PostDetailResponse getPostById(int postId) {
+	public PostDetailResponse getPostById(long postId) {
 		Post post = findPostById(postId);
 		return PostDetailResponse.from(post);
 	}
 
 	@Transactional
-	public void deletePostById(int userId, int postId) {
+	public void deletePostById(long userId, long postId) {
 		User user = findUserById(userId);
 		Post post = findPostById(postId);
 
@@ -85,7 +85,7 @@ public class PostService {
 	}
 
 	@Transactional
-	public void updatePost(int userId, int postId, PostUpdateRequest request) {
+	public void updatePost(long userId, long postId, PostUpdateRequest request) {
 		Post post = findPostById(postId);
 		User user = findUserById(userId);
 
@@ -104,6 +104,11 @@ public class PostService {
 		return posts.stream()
 			.map(PostResponse::from)
 			.toList();
+	}
+
+	@Transactional
+	public void updateLike(long userId, long postId) {
+
 	}
 
 	private User findUserById(long userId) {

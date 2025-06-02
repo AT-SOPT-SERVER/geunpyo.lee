@@ -9,11 +9,13 @@ import org.sopt.user.domain.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,6 +47,7 @@ public class Post {
 	private User user;
 
 	@Enumerated(value = EnumType.STRING)
+	@ElementCollection(fetch = FetchType.LAZY)
 	private List<Tag> tags;
 
 	private long likes;
