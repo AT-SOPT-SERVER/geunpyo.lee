@@ -106,6 +106,7 @@ public class PostService {
 			.toList();
 	}
 
+	//TODO: 좋아요 수정 기능 구현 해야함
 	@Transactional
 	public void updateLike(long userId, long postId) {
 

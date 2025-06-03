@@ -5,7 +5,9 @@ import org.sopt.comment.domain.Comment;
 import org.sopt.comment.repository.CommentRepository;
 import org.sopt.comment.service.exception.CommentNotFoundException;
 import org.sopt.comment.service.request.CommentCreateCommand;
+import org.sopt.comment.service.request.CommentUpdateCommand;
 import org.sopt.post.domain.Post;
+import org.sopt.post.exception.AccessDeniedException;
 import org.sopt.post.exception.PostNotFoundException;
 import org.sopt.post.repository.PostRepository;
 import org.sopt.user.domain.User;
@@ -48,5 +50,20 @@ public class CommentService {
 
 		Comment parent = commentRepository.findById(parentId).orElseThrow(CommentNotFoundException::new);
 		return Comment.createWithParent(content, user, post, parent);
+	}
+
+	@Transactional
+	public void updateComment(long userId, long commentId, CommentUpdateCommand command) {
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+		Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+		checkAuthentication(user, comment);
+
+		comment.updateContent(command.content());
+	}
+
+	private void checkAuthentication(User user, Comment comment) {
+		if (!comment.getUser().equals(user)) {
+			throw new AccessDeniedException();
+		}
 	}
 }
