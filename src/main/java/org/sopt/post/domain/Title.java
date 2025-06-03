@@ -45,4 +45,7 @@ public class Title {
 		return Objects.hash(content);
 	}
 
+	public String getContent() {
+		return content;
+	}
 }
