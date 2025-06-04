@@ -15,11 +15,16 @@ public enum ExceptionCode {
 
 	EMPTY_NAME(HttpStatus.BAD_REQUEST, "c40012", "이름이 비어있습니다"),
 	NAME_TOO_LONG(HttpStatus.BAD_REQUEST, "c40022", "이름은 7자를 넘을 수 없습니다."),
+
 	INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "c40023", "올바르지 않은 이메일 형식입니다."),
+
 	EMPTY_USER_ID(HttpStatus.BAD_REQUEST, "c40013", "유저ID는 필수입니다."),
 
 	INVALID_TAG(HttpStatus.BAD_REQUEST, "c40024", "올바르지 않은 태그입니다."),
 	INVALID_TAG_COUNT(HttpStatus.BAD_REQUEST, "c40024", "태그는 2개를 넘게 설정할 수 없습니다."),
+
+	//401
+	PASSWORD_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "c40010", "잘못된 비밀번호 입니다."),
 
 	//403
 	ACCESS_DENIED(HttpStatus.FORBIDDEN, "c4031", "작성자만 게시물을 변경할 수 있습니다."),
@@ -38,6 +43,7 @@ public enum ExceptionCode {
 	//409
 	DUPLICATE(HttpStatus.CONFLICT, "c4090", "이미 존재하는 리소스입니다."),
 	DUPLICATE_POST_TITLE(HttpStatus.CONFLICT, "c4091", "이미 동일한 내용의 게시물이 있습니다."),
+	CONFLICT_EMAIL(HttpStatus.CONFLICT, "c4092", "중복된 이메일 입니다."),
 
 	//429
 	POST_CREATION_COOLDOWN(HttpStatus.TOO_MANY_REQUESTS, "c4291", "도배 방지를 위해 잠시 후에 다시 시도해주세요."),
