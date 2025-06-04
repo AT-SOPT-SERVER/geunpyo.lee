@@ -61,6 +61,15 @@ public class CommentService {
 		comment.updateContent(command.content());
 	}
 
+	@Transactional
+	public void deleteComment(long userId, long commentId) {
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+		Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+		checkAuthentication(user, comment);
+
+		commentRepository.delete(comment);
+	}
+
 	private void checkAuthentication(User user, Comment comment) {
 		if (!comment.getUser().equals(user)) {
 			throw new AccessDeniedException();
