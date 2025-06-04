@@ -33,9 +33,9 @@ class PostRepositoryImplTest {
 
 	@BeforeEach
 	void setUp() {
-		User testUser1 = User.create("김개발", "test@test.com");
+		User testUser1 = User.create("김개발", "test@test.com", "test");
 
-		User testUser2 = User.create("바보", "test2@test.com");
+		User testUser2 = User.create("바보", "test2@test.com", "test");
 
 		entityManager.persistAndFlush(testUser1);
 		entityManager.persistAndFlush(testUser2);

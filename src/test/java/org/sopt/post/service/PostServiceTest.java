@@ -38,7 +38,7 @@ class PostServiceTest {
 	@Test
 	void createPost() {
 		//given
-		User user = User.create("test", "test@gmail.com");
+		User user = User.create("test", "test@gmail.com", "test");
 		User savedUser = userRepository.save(user);
 
 		PostCreateCommand command = new PostCreateCommand(
@@ -64,7 +64,7 @@ class PostServiceTest {
 	@Test
 	void createPostTagMaxTwo() {
 		//given
-		User user = User.create("test", "test@gmail.com");
+		User user = User.create("test", "test@gmail.com", "test");
 		User savedUser = userRepository.save(user);
 
 		PostCreateCommand command = new PostCreateCommand(

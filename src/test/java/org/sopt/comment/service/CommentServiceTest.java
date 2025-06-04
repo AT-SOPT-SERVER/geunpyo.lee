@@ -45,8 +45,8 @@ class CommentServiceTest {
 	@Test
 	void createCommentNoParent() {
 		//given
-		User user = User.create("test", "test@gmail.com");
-		User user2 = User.create("test2", "test@gmail.com");
+		User user = User.create("test", "test@gmail.com", "test");
+		User user2 = User.create("test2", "test@gmail.com", "test");
 		User savedUser = userRepository.save(user);
 		User savedUser2 = userRepository.save(user2);
 
@@ -82,8 +82,8 @@ class CommentServiceTest {
 	@Test
 	void createWithParent() {
 		//given
-		User user = User.create("test", "test@gmail.com");
-		User user2 = User.create("test2", "test@gmail.com");
+		User user = User.create("test", "test@gmail.com", "test");
+		User user2 = User.create("test2", "test@gmail.com", "test");
 		User savedUser = userRepository.save(user);
 		User savedUser2 = userRepository.save(user2);
 
@@ -127,8 +127,8 @@ class CommentServiceTest {
 	@Test
 	void update() {
 		//given
-		User user = User.create("test", "test@gmail.com");
-		User user2 = User.create("test2", "test@gmail.com");
+		User user = User.create("test", "test@gmail.com", "test");
+		User user2 = User.create("test2", "test@gmail.com", "test");
 		User savedUser = userRepository.save(user);
 		User savedUser2 = userRepository.save(user2);
 
@@ -157,8 +157,8 @@ class CommentServiceTest {
 	@Test
 	void updateAnotherUserComment() {
 		//given
-		User user = User.create("test", "test@gmail.com");
-		User user2 = User.create("test2", "test@gmail.com");
+		User user = User.create("test", "test@gmail.com", "test");
+		User user2 = User.create("test2", "test@gmail.com", "test");
 		User savedUser = userRepository.save(user);
 		User savedUser2 = userRepository.save(user2);
 
@@ -184,8 +184,8 @@ class CommentServiceTest {
 	@Test
 	void deleteComment() {
 		//given
-		User user = User.create("test", "test@gmail.com");
-		User user2 = User.create("test2", "test@gmail.com");
+		User user = User.create("test", "test@gmail.com", "test");
+		User user2 = User.create("test2", "test@gmail.com", "test");
 		User savedUser = userRepository.save(user);
 		User savedUser2 = userRepository.save(user2);
 
