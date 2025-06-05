@@ -52,7 +52,7 @@ public class Comment {
 	}
 
 	@Builder
-	private Comment(String content, User user, Post post, Comment parent, long likes) {
+	private Comment(String content, User user, Post post, Comment parent) {
 		this.content = content;
 		this.user = user;
 		this.post = post;

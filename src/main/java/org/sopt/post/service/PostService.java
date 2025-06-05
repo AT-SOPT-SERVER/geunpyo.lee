@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.sopt.comment.domain.Comment;
+import org.sopt.comment.repository.CommentRepository;
 import org.sopt.post.controller.request.PostUpdateRequest;
 import org.sopt.post.controller.response.PostDetailResponse;
 import org.sopt.post.controller.response.PostResponse;
@@ -32,12 +34,14 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
 	private final PostCacheService postCacheService;
+	private final CommentRepository commentRepository;
 
 	public PostService(PostRepository postRepository, UserRepository userRepository,
-		PostCacheService postCacheService) {
+		PostCacheService postCacheService, CommentRepository commentRepository) {
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.postCacheService = postCacheService;
+		this.commentRepository = commentRepository;
 	}
 
 	@Transactional
@@ -70,7 +74,8 @@ public class PostService {
 	@Transactional(readOnly = true)
 	public PostDetailResponse getPostById(long postId) {
 		Post post = findPostById(postId);
-		return PostDetailResponse.from(post);
+		List<Comment> comments = commentRepository.findAllByPost(post);
+		return PostDetailResponse.of(post, comments);
 	}
 
 	@Transactional
