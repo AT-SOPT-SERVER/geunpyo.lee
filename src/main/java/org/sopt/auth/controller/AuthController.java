@@ -18,13 +18,13 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 	private final AuthService authService;
 
-	@PostMapping
+	@PostMapping("/signup")
 	public ResponseDto<AuthResponse> signup(@RequestBody SignupRequest request) {
 		AuthResponse response = authService.signup(request);
 		return ResponseDto.ok(response);
 	}
 
-	@PostMapping
+	@PostMapping("/login")
 	public ResponseDto<AuthResponse> login(@RequestBody LoginRequest request) {
 		AuthResponse response = authService.login(request);
 		return ResponseDto.ok(response);

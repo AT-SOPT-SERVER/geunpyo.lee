@@ -11,7 +11,6 @@ import org.sopt.post.exception.AccessDeniedException;
 import org.sopt.post.exception.PostNotFoundException;
 import org.sopt.post.repository.PostRepository;
 import org.sopt.user.domain.User;
-import org.sopt.user.exception.UserNotFoundException;
 import org.sopt.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +30,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public CommentResponse createComment(long userId, long postId, Long parentId, CommentCreateCommand command) {
-		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+	public CommentResponse createComment(User user, long postId, Long parentId, CommentCreateCommand command) {
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
 		Comment comment = buildComment(user, post, parentId, command.content());
@@ -53,8 +51,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void updateComment(long userId, long commentId, CommentUpdateCommand command) {
-		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+	public void updateComment(User user, long commentId, CommentUpdateCommand command) {
 		Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 		checkAuthentication(user, comment);
 
@@ -62,8 +59,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void deleteComment(long userId, long commentId) {
-		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+	public void deleteComment(User user, long commentId) {
 		Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 		checkAuthentication(user, comment);
 

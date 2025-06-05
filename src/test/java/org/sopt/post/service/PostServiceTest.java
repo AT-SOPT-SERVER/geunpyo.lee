@@ -48,7 +48,7 @@ class PostServiceTest {
 		);
 		//when
 
-		PostResponse response = postService.createPost(savedUser.getId(), command);
+		PostResponse response = postService.createPost(savedUser, command);
 
 		//then
 		long postId = response.postId();
@@ -74,7 +74,7 @@ class PostServiceTest {
 		);
 
 		//when & then
-		assertThatThrownBy(() -> postService.createPost(savedUser.getId(), command))
+		assertThatThrownBy(() -> postService.createPost(savedUser, command))
 			.isInstanceOf(InvalidTagCountException.class)
 			.hasMessage("태그는 2개를 넘게 설정할 수 없습니다.");
 

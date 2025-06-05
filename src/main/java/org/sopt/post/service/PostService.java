@@ -41,14 +41,13 @@ public class PostService {
 	}
 
 	@Transactional
-	public PostResponse createPost(long userId, PostCreateCommand command) {
-		User user = findUserById(userId);
-		checkUserCooldown(userId);
+	public PostResponse createPost(User user, PostCreateCommand command) {
+		checkUserCooldown(user.getId());
 
 		Post post = buildPostFrom(command.title(), command.content(), command.tags(), user);
 		Post savedPost = postRepository.save(post);
 
-		postCacheService.updateUserLastPostTime(userId, LocalDateTime.now());
+		postCacheService.updateUserLastPostTime(user.getId(), LocalDateTime.now());
 
 		return PostResponse.from(savedPost);
 	}
@@ -75,8 +74,7 @@ public class PostService {
 	}
 
 	@Transactional
-	public void deletePostById(long userId, long postId) {
-		User user = findUserById(userId);
+	public void deletePostById(User user, long postId) {
 		Post post = findPostById(postId);
 
 		checkAuthentication(user, post);
@@ -85,9 +83,8 @@ public class PostService {
 	}
 
 	@Transactional
-	public void updatePost(long userId, long postId, PostUpdateRequest request) {
+	public void updatePost(User user, long postId, PostUpdateRequest request) {
 		Post post = findPostById(postId);
-		User user = findUserById(userId);
 
 		checkAuthentication(user, post);
 

@@ -2,6 +2,7 @@ package org.sopt.post.controller;
 
 import java.util.List;
 
+import org.sopt.global.common.annotation.Auth;
 import org.sopt.global.common.dto.ResponseDto;
 import org.sopt.post.controller.request.PostCreateRequest;
 import org.sopt.post.controller.request.PostUpdateRequest;
@@ -9,13 +10,13 @@ import org.sopt.post.controller.response.PostDetailResponse;
 import org.sopt.post.controller.response.PostResponse;
 import org.sopt.post.domain.constant.Tag;
 import org.sopt.post.service.PostService;
+import org.sopt.user.domain.User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,9 +29,9 @@ public class PostController {
 	}
 
 	@PostMapping("/posts")
-	public ResponseDto<PostResponse> createPost(@RequestHeader Integer userId,
+	public ResponseDto<PostResponse> createPost(@Auth User user,
 		@RequestBody PostCreateRequest postCreateRequest) {
-		PostResponse response = postService.createPost(userId, postCreateRequest.toCommand());
+		PostResponse response = postService.createPost(user, postCreateRequest.toCommand());
 		return ResponseDto.created(response);
 	}
 
@@ -45,15 +46,15 @@ public class PostController {
 	}
 
 	@DeleteMapping("/posts/{id}")
-	public ResponseDto<Void> deletePostById(@RequestHeader Integer userId, @PathVariable int id) {
-		postService.deletePostById(userId, id);
+	public ResponseDto<Void> deletePostById(@Auth User user, @PathVariable int id) {
+		postService.deletePostById(user, id);
 		return ResponseDto.okWithoutContent();
 	}
 
 	@PutMapping("/posts/{id}")
-	public ResponseDto<Void> updatePost(@RequestHeader Integer userId, @PathVariable int id,
+	public ResponseDto<Void> updatePost(@Auth User user, @PathVariable int id,
 		@RequestBody PostUpdateRequest request) {
-		postService.updatePost(userId, id, request);
+		postService.updatePost(user, id, request);
 		return ResponseDto.okWithoutContent();
 	}
 

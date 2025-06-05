@@ -65,7 +65,7 @@ class CommentServiceTest {
 
 		//when
 
-		CommentResponse response = commentService.createComment(savedUser2.getId(), savedPost.getId(), null, command);
+		CommentResponse response = commentService.createComment(savedUser2, savedPost.getId(), null, command);
 
 		//then
 		Comment comment = commentRepository.findById(response.commentId()).get();
@@ -109,7 +109,7 @@ class CommentServiceTest {
 		);
 
 		//when
-		CommentResponse response = commentService.createComment(savedUser2.getId(), savedPost.getId(),
+		CommentResponse response = commentService.createComment(savedUser2, savedPost.getId(),
 			savedPost.getId(), command);
 
 		//then
@@ -144,7 +144,7 @@ class CommentServiceTest {
 
 		CommentUpdateCommand command = new CommentUpdateCommand("updateComment");
 		//when
-		commentService.updateComment(savedUser2.getId(), comment.getId(), command);
+		commentService.updateComment(savedUser2, comment.getId(), command);
 
 		//then
 		Comment resultComment = commentRepository.findById(comment.getId()).orElseThrow(CommentNotFoundException::new);
@@ -175,7 +175,7 @@ class CommentServiceTest {
 		CommentUpdateCommand command = new CommentUpdateCommand("updateComment");
 
 		//when & then
-		assertThatThrownBy(() -> commentService.updateComment(savedUser.getId(), comment.getId(), command))
+		assertThatThrownBy(() -> commentService.updateComment(savedUser, comment.getId(), command))
 			.isInstanceOf(AccessDeniedException.class);
 
 	}
@@ -200,7 +200,7 @@ class CommentServiceTest {
 		Comment comment = commentRepository.save(Comment.createWithoutParent("testComment", savedUser2, savedPost));
 
 		//when
-		commentService.deleteComment(savedUser2.getId(), comment.getId());
+		commentService.deleteComment(savedUser2, comment.getId());
 
 		//then
 		Comment resultComment = commentRepository.findById(comment.getId()).orElse(null);
