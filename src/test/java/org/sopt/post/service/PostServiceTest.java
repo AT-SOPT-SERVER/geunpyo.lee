@@ -7,8 +7,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.sopt.comment.domain.Comment;
+import org.sopt.comment.repository.CommentRepository;
+import org.sopt.post.controller.response.PostDetailResponse;
 import org.sopt.post.controller.response.PostResponse;
+import org.sopt.post.domain.Content;
 import org.sopt.post.domain.Post;
+import org.sopt.post.domain.Title;
 import org.sopt.post.exception.InvalidTagCountException;
 import org.sopt.post.exception.PostNotFoundException;
 import org.sopt.post.repository.PostRepository;
@@ -33,6 +38,8 @@ class PostServiceTest {
 
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	private CommentRepository commentRepository;
 
 	@DisplayName("사용자는 게시글을 작성할 수 있다.")
 	@Test
@@ -77,6 +84,40 @@ class PostServiceTest {
 		assertThatThrownBy(() -> postService.createPost(savedUser, command))
 			.isInstanceOf(InvalidTagCountException.class)
 			.hasMessage("태그는 2개를 넘게 설정할 수 없습니다.");
+
+	}
+
+	@DisplayName("사용자는 게시글 하나를 조회할 수 있다.")
+	@Test
+	void getPostDetail() {
+		//given
+		User user = User.create("test", "test@gmail.com", "test");
+		User savedUser = userRepository.save(user);
+
+		Post savedPost = postRepository.save(Post.create(
+			new Title("제목"),
+			new Content("내용"),
+			List.of(BE, ETC),
+			savedUser
+		));
+
+		Comment comment = commentRepository.save(Comment.createWithoutParent(
+			"댓글",
+			savedUser,
+			savedPost
+		));
+
+		//when
+
+		PostDetailResponse response = postService.getPostById(savedPost.getId());
+
+		//then
+
+		assertThat(response.content()).isEqualTo("내용");
+
+		assertThat(response.comments()).hasSize(1)
+			.extracting("authorName")
+			.containsExactly("test");
 
 	}
 
