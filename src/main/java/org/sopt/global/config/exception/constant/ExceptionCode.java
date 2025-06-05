@@ -25,6 +25,7 @@ public enum ExceptionCode {
 
 	//401
 	PASSWORD_NOT_MATCHED(HttpStatus.UNAUTHORIZED, "c40010", "잘못된 비밀번호 입니다."),
+	NOT_AUTHENTICATED(HttpStatus.UNAUTHORIZED, "c40020", "유효한 토큰이 아닙니다."),
 
 	//403
 	ACCESS_DENIED(HttpStatus.FORBIDDEN, "c4031", "작성자만 게시물을 변경할 수 있습니다."),
