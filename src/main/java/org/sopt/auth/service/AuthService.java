@@ -12,6 +12,7 @@ import org.sopt.user.repository.UserRepository;
 import org.sopt.util.JwtUtil;
 import org.sopt.util.PasswordUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +24,7 @@ public class AuthService {
 	private final JwtUtil jwtUtil;
 	private final PasswordUtil passwordUtil;
 
+	@Transactional
 	public AuthResponse signup(SignupRequest request) {
 		if (userRepository.existsByEmail(request.email())) {
 			throw new ConflictEmailException();
@@ -32,7 +34,7 @@ public class AuthService {
 
 		User user = User.create(
 			request.name(),
-			request.name(),
+			request.email(),
 			encodedPassword
 		);
 
