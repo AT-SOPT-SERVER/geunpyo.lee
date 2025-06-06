@@ -7,12 +7,15 @@ import org.sopt.global.common.dto.ResponseDto;
 import org.sopt.post.controller.request.PostCreateRequest;
 import org.sopt.post.controller.request.PostUpdateRequest;
 import org.sopt.post.controller.response.PostDetailResponse;
+import org.sopt.post.controller.response.PostLikeChangeResponse;
 import org.sopt.post.controller.response.PostResponse;
 import org.sopt.post.domain.constant.Tag;
+import org.sopt.post.service.PostLikeService;
 import org.sopt.post.service.PostService;
 import org.sopt.user.domain.User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,9 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PostController {
 	private final PostService postService;
+	private final PostLikeService postLikeService;
 
-	public PostController(PostService postService) {
+	public PostController(PostService postService, PostLikeService postLikeService) {
 		this.postService = postService;
+		this.postLikeService = postLikeService;
 	}
 
 	@PostMapping("/posts")
@@ -63,5 +68,13 @@ public class PostController {
 		@RequestParam(required = false) Tag tag) {
 		List<PostResponse> postResponses = postService.searchPost(keyword, tag);
 		return ResponseDto.ok(postResponses);
+	}
+
+	@PatchMapping("/posts/likes/{postId}")
+	public ResponseDto<PostLikeChangeResponse> toggleLike(@Auth User user,
+		@PathVariable long postId
+	) {
+		PostLikeChangeResponse response = postLikeService.toggleLike(user, postId);
+		return ResponseDto.ok(response);
 	}
 }
