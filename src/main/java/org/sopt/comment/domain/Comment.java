@@ -57,7 +57,6 @@ public class Comment {
 		this.user = user;
 		this.post = post;
 		this.parent = parent;
-		this.likes = 1;
 	}
 
 	public static Comment createWithoutParent(String content, User user, Post post) {
