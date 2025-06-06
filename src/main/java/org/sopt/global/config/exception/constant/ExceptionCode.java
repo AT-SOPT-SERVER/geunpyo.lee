@@ -12,6 +12,7 @@ public enum ExceptionCode {
 
 	EMPTY_CONTENT(HttpStatus.BAD_REQUEST, "c40011", "내용이 비어있습니다"),
 	CONTENT_TOO_LONG(HttpStatus.BAD_REQUEST, "c40021", "내용은 1000자를 넘을 수 없습니다."),
+	COMMENT_TOO_LONG(HttpStatus.BAD_REQUEST, "c40031", "댓글은 300자를 넘을 수 없습니다."),
 
 	EMPTY_NAME(HttpStatus.BAD_REQUEST, "c40012", "이름이 비어있습니다"),
 	NAME_TOO_LONG(HttpStatus.BAD_REQUEST, "c40022", "이름은 7자를 넘을 수 없습니다."),

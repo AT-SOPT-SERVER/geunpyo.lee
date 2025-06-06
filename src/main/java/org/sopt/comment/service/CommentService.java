@@ -2,6 +2,7 @@ package org.sopt.comment.service;
 
 import org.sopt.comment.controller.response.CommentResponse;
 import org.sopt.comment.domain.Comment;
+import org.sopt.comment.exception.CommentLengthException;
 import org.sopt.comment.repository.CommentRepository;
 import org.sopt.comment.service.exception.CommentNotFoundException;
 import org.sopt.comment.service.request.CommentCreateCommand;
@@ -11,27 +12,22 @@ import org.sopt.post.exception.AccessDeniedException;
 import org.sopt.post.exception.PostNotFoundException;
 import org.sopt.post.repository.PostRepository;
 import org.sopt.user.domain.User;
-import org.sopt.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class CommentService {
 	private final CommentRepository commentRepository;
-	private final UserRepository userRepository;
 	private final PostRepository postRepository;
-
-	public CommentService(CommentRepository commentRepository, UserRepository userRepository,
-		PostRepository postRepository) {
-		this.commentRepository = commentRepository;
-		this.userRepository = userRepository;
-		this.postRepository = postRepository;
-	}
 
 	@Transactional
 	public CommentResponse createComment(User user, long postId, Long parentId, CommentCreateCommand command) {
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+		validateContentLength(command.content());
 
 		Comment comment = buildComment(user, post, parentId, command.content());
 
@@ -55,6 +51,8 @@ public class CommentService {
 		Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 		checkAuthentication(user, comment);
 
+		validateContentLength(command.content());
+
 		comment.updateContent(command.content());
 	}
 
@@ -69,6 +67,12 @@ public class CommentService {
 	private void checkAuthentication(User user, Comment comment) {
 		if (!comment.getUser().equals(user)) {
 			throw new AccessDeniedException();
+		}
+	}
+
+	private void validateContentLength(String content) {
+		if (content.length() > 300) {
+			throw new CommentLengthException();
 		}
 	}
 }
