@@ -2,26 +2,22 @@ package org.sopt.post.controller.response;
 
 import java.util.List;
 
-import org.sopt.comment.controller.response.CommentDetail;
-import org.sopt.comment.domain.Comment;
-import org.sopt.post.domain.Post;
+import org.sopt.post.repository.dto.CommentDetailDto;
+import org.sopt.post.repository.dto.PostSummaryDto;
 
 public record PostDetailResponse(
 	String title,
 	String content,
 	String username,
-	List<CommentDetail> comments
+	List<CommentDetailDto> comments
 ) {
-	public static PostDetailResponse of(Post post, List<Comment> comments) {
-		List<CommentDetail> commentInfos = comments.stream()
-			.map(CommentDetail::from)
-			.toList();
-		
+	public static PostDetailResponse of(PostSummaryDto postDetail, List<CommentDetailDto> commentDetails) {
+
 		return new PostDetailResponse(
-			post.getTitle(),
-			post.getContent(),
-			post.getUser().getName(),
-			commentInfos
+			postDetail.getTitle(),
+			postDetail.getContent(),
+			postDetail.getAuthorName(),
+			commentDetails
 		);
 	}
 }

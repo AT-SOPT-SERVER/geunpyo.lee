@@ -36,7 +36,7 @@ public class PostLike {
 	@Column(name = "postId", nullable = false)
 	private Long postId;
 
-	private boolean isActive;
+	private boolean active;
 
 	@CreatedDate
 	private LocalDateTime createdAt;
@@ -45,7 +45,7 @@ public class PostLike {
 	private PostLike(long userId, long postId, boolean activeStatus) {
 		this.userId = userId;
 		this.postId = postId;
-		this.isActive = activeStatus;
+		this.active = activeStatus;
 	}
 
 	public static PostLike create(long userId, long postId) {
@@ -57,6 +57,6 @@ public class PostLike {
 	}
 
 	public void toggle() {
-		this.isActive = !this.isActive;
+		this.active = !this.active;
 	}
 }

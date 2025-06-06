@@ -101,8 +101,20 @@ class PostServiceTest {
 			savedUser
 		));
 
-		Comment comment = commentRepository.save(Comment.createWithoutParent(
+		commentRepository.save(Comment.createWithoutParent(
 			"댓글",
+			savedUser,
+			savedPost
+		));
+
+		commentRepository.save(Comment.createWithoutParent(
+			"댓글2",
+			savedUser,
+			savedPost
+		));
+
+		commentRepository.save(Comment.createWithoutParent(
+			"댓글3",
 			savedUser,
 			savedPost
 		));
@@ -115,9 +127,9 @@ class PostServiceTest {
 
 		assertThat(response.content()).isEqualTo("내용");
 
-		assertThat(response.comments()).hasSize(1)
+		assertThat(response.comments()).hasSize(3)
 			.extracting("authorName")
-			.containsExactly("test");
+			.containsExactly("test", "test", "test");
 
 	}
 

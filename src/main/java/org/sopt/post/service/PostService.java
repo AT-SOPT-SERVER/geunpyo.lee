@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.sopt.comment.domain.Comment;
 import org.sopt.comment.repository.CommentRepository;
 import org.sopt.post.controller.request.PostUpdateRequest;
 import org.sopt.post.controller.response.PostDetailResponse;
@@ -19,30 +18,26 @@ import org.sopt.post.exception.InvalidTagCountException;
 import org.sopt.post.exception.PostNotFoundException;
 import org.sopt.post.exception.PostTitleDuplicateException;
 import org.sopt.post.exception.RequestCooldownException;
+import org.sopt.post.repository.PostLikeRepository;
 import org.sopt.post.repository.PostRepository;
+import org.sopt.post.repository.dto.CommentDetailDto;
+import org.sopt.post.repository.dto.PostSummaryDto;
 import org.sopt.post.service.request.PostCreateCommand;
 import org.sopt.user.domain.User;
-import org.sopt.user.exception.UserNotFoundException;
-import org.sopt.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class PostService {
 	private static final Duration POST_CREATION_COOLDOWN = Duration.ofMinutes(3);
 
 	private final PostRepository postRepository;
-	private final UserRepository userRepository;
 	private final PostCacheService postCacheService;
 	private final CommentRepository commentRepository;
-
-	public PostService(PostRepository postRepository, UserRepository userRepository,
-		PostCacheService postCacheService, CommentRepository commentRepository) {
-		this.postRepository = postRepository;
-		this.userRepository = userRepository;
-		this.postCacheService = postCacheService;
-		this.commentRepository = commentRepository;
-	}
+	private final PostLikeRepository postLikeRepository;
 
 	@Transactional
 	public PostResponse createPost(User user, PostCreateCommand command) {
@@ -65,7 +60,7 @@ public class PostService {
 	@Transactional(readOnly = true)
 	public List<PostResponse> getAllPost() {
 		List<Post> posts = postRepository.findAllOrderByOrderByCreatedAtDesc();
-
+		
 		return posts.stream()
 			.map(PostResponse::from)
 			.toList();
@@ -73,9 +68,10 @@ public class PostService {
 
 	@Transactional(readOnly = true)
 	public PostDetailResponse getPostById(long postId) {
-		Post post = findPostById(postId);
-		List<Comment> comments = commentRepository.findAllByPost(post);
-		return PostDetailResponse.of(post, comments);
+		PostSummaryDto postDetail = postRepository.findPostSummary(postId);
+		List<CommentDetailDto> commentDetails = postRepository.findCommentDetails(postDetail.getId());
+
+		return PostDetailResponse.of(postDetail, commentDetails);
 	}
 
 	@Transactional
@@ -106,17 +102,6 @@ public class PostService {
 		return posts.stream()
 			.map(PostResponse::from)
 			.toList();
-	}
-
-	//TODO: 좋아요 수정 기능 구현 해야함
-	@Transactional
-	public void updateLike(long userId, long postId) {
-
-	}
-
-	private User findUserById(long userId) {
-		return userRepository.findById(userId)
-			.orElseThrow(UserNotFoundException::new);
 	}
 
 	private Post findPostById(long postId) {

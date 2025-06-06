@@ -44,7 +44,7 @@ public class Post {
 	@Embedded
 	private Content content;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
