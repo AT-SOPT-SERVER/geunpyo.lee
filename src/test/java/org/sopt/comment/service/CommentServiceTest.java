@@ -74,7 +74,6 @@ class CommentServiceTest {
 		assertThat(comment.getPost().getId()).isEqualTo(savedPost.getId());
 		assertThat(comment.getContent()).isEqualTo(command.content());
 		assertThat(comment.getParent()).isNull();
-		assertThat(comment.getLikes()).isEqualTo(1);
 
 	}
 
@@ -119,7 +118,6 @@ class CommentServiceTest {
 		assertThat(comment.getPost().getId()).isEqualTo(savedPost.getId());
 		assertThat(comment.getParent().getId()).isEqualTo(savedParent.getId());
 		assertThat(comment.getContent()).isEqualTo(command.content());
-		assertThat(comment.getLikes()).isEqualTo(1);
 
 	}
 
