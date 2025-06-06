@@ -133,4 +133,28 @@ class PostServiceTest {
 
 	}
 
+	@DisplayName("사용자는 한번에 게시글 10개를 조회할 수 있다.")
+	@Test
+	void getPageTest() {
+		//given
+		User user = User.create("test", "test@gmail.com", "test");
+		User savedUser = userRepository.save(user);
+
+		for (int i = 0; i < 12; i++) {
+			postRepository.save(Post.create(
+				new Title("제목"),
+				new Content("내용"),
+				List.of(BE, ETC),
+				savedUser
+			));
+		}
+
+		//when
+		List<PostResponse> response = postService.getAllPost();
+
+		//then
+		assertThat(response).hasSize(10);
+
+	}
+
 }
