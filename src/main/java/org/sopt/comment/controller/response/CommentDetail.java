@@ -14,7 +14,6 @@ public record CommentDetail(
 		return CommentDetail.builder()
 			.content(comment.getContent())
 			.authorName(comment.getUser().getName())
-			.likes(comment.getLikes())
 			.build();
 	}
 }
