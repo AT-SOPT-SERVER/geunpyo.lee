@@ -1,4 +1,4 @@
-package org.sopt.comment.domain;
+package org.sopt.post.domain;
 
 import java.time.LocalDateTime;
 
@@ -19,13 +19,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(uniqueConstraints = {
-	@UniqueConstraint(columnNames = {"user_id", "comment_id"})
+	@UniqueConstraint(columnNames = {"user_id", "post_id"})
 })
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class CommentLike {
+public class PostLike {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -33,8 +33,8 @@ public class CommentLike {
 	@Column(name = "user_id", nullable = false)
 	private Long userId;
 
-	@Column(name = "comment_id", nullable = false)
-	private Long commentId;
+	@Column(name = "postId", nullable = false)
+	private Long postId;
 
 	private boolean isActive;
 
@@ -42,16 +42,16 @@ public class CommentLike {
 	private LocalDateTime createdAt;
 
 	@Builder
-	private CommentLike(long userId, long commentId, boolean activeStatus) {
+	private PostLike(long userId, long postId, boolean activeStatus) {
 		this.userId = userId;
-		this.commentId = commentId;
+		this.postId = postId;
 		this.isActive = activeStatus;
 	}
 
-	public static CommentLike create(long userId, long commentId) {
-		return CommentLike.builder()
+	public static PostLike create(long userId, long postId) {
+		return PostLike.builder()
 			.userId(userId)
-			.commentId(commentId)
+			.postId(postId)
 			.activeStatus(true)
 			.build();
 	}

@@ -23,10 +23,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
+import lombok.Getter;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "posts")
+@Getter
 public class Post {
 
 	@Id
@@ -50,15 +52,12 @@ public class Post {
 	@ElementCollection(fetch = FetchType.LAZY)
 	private List<Tag> tags;
 
-	private long likes;
-
 	@Builder
 	private Post(Title title, Content content, List<Tag> tags, User user, long likes) {
 		this.title = title;
 		this.user = user;
 		this.content = content;
 		this.tags = tags;
-		this.likes = likes;
 	}
 
 	private Post(Title title) {
@@ -91,16 +90,8 @@ public class Post {
 		return this.title.content();
 	}
 
-	public User getUser() {
-		return user;
-	}
-
 	public String getContent() {
 		return content.value();
-	}
-
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
 	}
 
 	@Override
@@ -122,11 +113,4 @@ public class Post {
 		return Objects.hash(id, title, createdAt);
 	}
 
-	public List<Tag> getTags() {
-		return tags;
-	}
-
-	public long getLikes() {
-		return this.likes;
-	}
 }

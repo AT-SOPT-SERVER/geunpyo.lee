@@ -43,8 +43,6 @@ public class Comment {
 	@JoinColumn(name = "parent_id")
 	private Comment parent;
 
-	private long likes;
-
 	@CreatedDate
 	private LocalDateTime createdAt;
 
