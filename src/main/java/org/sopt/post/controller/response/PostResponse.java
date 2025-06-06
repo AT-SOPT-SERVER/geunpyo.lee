@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sopt.post.domain.Post;
 import org.sopt.post.domain.constant.Tag;
+import org.sopt.post.repository.dto.PostPageDto;
 
 public record PostResponse(
 	long postId,
@@ -12,6 +13,16 @@ public record PostResponse(
 	String content,
 	List<Tag> tags
 ) {
+	public static PostResponse from(PostPageDto post) {
+		return new PostResponse(
+			post.getPostId(),
+			post.getTitle(),
+			post.getUsername(),
+			post.getContent(),
+			post.getTags()
+		);
+	}
+
 	public static PostResponse from(Post post) {
 		return new PostResponse(
 			post.getId(),

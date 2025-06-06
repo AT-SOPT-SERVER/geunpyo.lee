@@ -1,6 +1,14 @@
 package org.sopt.post.repository;
 
+import static org.sopt.post.domain.QPost.*;
+import static org.sopt.user.domain.QUser.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.sopt.comment.domain.QComment;
 import org.sopt.comment.domain.QCommentLike;
@@ -9,12 +17,18 @@ import org.sopt.post.domain.QPost;
 import org.sopt.post.domain.QPostLike;
 import org.sopt.post.domain.constant.Tag;
 import org.sopt.post.repository.dto.CommentDetailDto;
+import org.sopt.post.repository.dto.PostPageDto;
 import org.sopt.post.repository.dto.PostSummaryDto;
 import org.sopt.user.domain.QUser;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -92,8 +106,60 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 			.fetch();
 	}
 
+	@Override
+	public Page<PostPageDto> search(Pageable pageable) {
+
+		List<Post> posts = queryFactory
+			.selectFrom(post)
+			.join(post.user, user).fetchJoin()
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.orderBy(post.createdAt.desc())
+			.fetch();
+
+		List<PostPageDto> results = posts.stream()
+			.map(this::convertToDto)
+			.collect(Collectors.toList());
+
+		JPAQuery<Long> countQuery = queryFactory
+			.select(post.count())
+			.from(post);
+
+		return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
+	}
+
+	private PostPageDto convertToDto(Post post) {
+		return new PostPageDto(
+			post.getId(),
+			post.getTitle(),
+			post.getUser().getName(),
+			post.getContent(),
+			post.getTags()
+		);
+	}
+
+	private Map<Long, List<Tag>> getTagsForPosts(Set<Long> postIds) {
+		QPost qPost = QPost.post;
+
+		List<Tuple> tagResults = queryFactory
+			.select(qPost.id, qPost.tags)
+			.from(qPost)
+			.where(qPost.id.in(postIds))
+			.fetch();
+
+		Map<Long, List<Tag>> tagsMap = new HashMap<>();
+		for (Tuple tuple : tagResults) {
+			Long postId = tuple.get(qPost.id);
+			List<Tag> tags = tuple.get(qPost.tags);
+
+			tagsMap.computeIfAbsent(postId, k -> new ArrayList<>()).addAll(tags);
+		}
+
+		return tagsMap;
+	}
+
 	private BooleanExpression tagCondition(Tag tag) {
-		return tag != null ? QPost.post.tags.contains(tag) : null;
+		return tag != null ? post.tags.contains(tag) : null;
 	}
 
 	private BooleanExpression keywordCondition(String keyword) {

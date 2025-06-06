@@ -44,13 +44,14 @@ dependencies {
     implementation 'io.lettuce:lettuce-core'
 
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    
     implementation 'org.springframework:spring-context'
 
+    // QueryDSL - 버전을 명시적으로 지정
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    implementation 'com.querydsl:querydsl-core:5.0.0'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 }
 
 test {
@@ -63,15 +64,27 @@ def querydslDir = "$buildDir/generated/querydsl"
 sourceSets {
     main {
         java {
-            srcDirs = ['src/main/java', querydslDir]
+            srcDirs += [querydslDir]
         }
     }
 }
 
-tasks.withType(JavaCompile) {
-    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+tasks.withType(JavaCompile).configureEach {
+    options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
 }
 
 clean {
     delete file(querydslDir)
+}
+
+tasks.register('generateQuerydsl', JavaCompile) {
+    doFirst {
+        if (!file(querydslDir).exists()) {
+            file(querydslDir).mkdirs()
+        }
+    }
+}
+
+compileJava {
+    dependsOn generateQuerydsl
 }

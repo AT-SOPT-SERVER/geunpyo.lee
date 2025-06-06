@@ -21,9 +21,12 @@ import org.sopt.post.exception.RequestCooldownException;
 import org.sopt.post.repository.PostLikeRepository;
 import org.sopt.post.repository.PostRepository;
 import org.sopt.post.repository.dto.CommentDetailDto;
+import org.sopt.post.repository.dto.PostPageDto;
 import org.sopt.post.repository.dto.PostSummaryDto;
 import org.sopt.post.service.request.PostCreateCommand;
 import org.sopt.user.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,8 +62,8 @@ public class PostService {
 
 	@Transactional(readOnly = true)
 	public List<PostResponse> getAllPost() {
-		List<Post> posts = postRepository.findAllOrderByOrderByCreatedAtDesc();
-		
+		Page<PostPageDto> posts = postRepository.search(PageRequest.of(0, 10));
+
 		return posts.stream()
 			.map(PostResponse::from)
 			.toList();
