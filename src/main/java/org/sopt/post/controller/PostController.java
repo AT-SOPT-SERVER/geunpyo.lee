@@ -6,7 +6,7 @@ import org.sopt.global.common.annotation.Auth;
 import org.sopt.global.common.dto.ResponseDto;
 import org.sopt.post.controller.request.PostCreateRequest;
 import org.sopt.post.controller.request.PostUpdateRequest;
-import org.sopt.post.controller.response.PostDetailResponse;
+import org.sopt.post.controller.response.PostDetailsResponse;
 import org.sopt.post.controller.response.PostLikeChangeResponse;
 import org.sopt.post.controller.response.PostResponse;
 import org.sopt.post.domain.constant.Tag;
@@ -46,7 +46,7 @@ public class PostController {
 	}
 
 	@GetMapping("/posts/{id}")
-	public ResponseDto<PostDetailResponse> getPostById(@PathVariable int id) {
+	public ResponseDto<PostDetailsResponse> getPostById(@PathVariable int id) {
 		return ResponseDto.ok(postService.getPostById(id));
 	}
 
