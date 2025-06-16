@@ -18,7 +18,8 @@ import org.sopt.post.domain.QPostLike;
 import org.sopt.post.domain.constant.Tag;
 import org.sopt.post.repository.dto.CommentDetailDto;
 import org.sopt.post.repository.dto.PostPageDto;
-import org.sopt.post.repository.dto.PostSummaryDto;
+import org.sopt.post.repository.dto.PostSummary;
+import org.sopt.post.repository.dto.QPostSummary;
 import org.sopt.user.domain.QUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,19 +57,20 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 	}
 
 	@Override
-	public PostSummaryDto findPostSummary(Long postId) {
+	public PostSummary findPostSummary(Long postId) {
 		QPost post = QPost.post;
 		QUser user = QUser.user;
 		QPostLike postLike = QPostLike.postLike;
 
 		return queryFactory
-			.select(Projections.constructor(PostSummaryDto.class,
-				post.id,
-				post.title.content,
-				post.content.value,
-				user.name,
-				postLike.id.countDistinct().coalesce(0L)
-			))
+			.select(new QPostSummary(
+					post.id,
+					post.title.content,
+					post.content.value,
+					user.name,
+					postLike.id.countDistinct().coalesce(0L)
+				)
+			)
 			.from(post)
 			.join(post.user, user)
 			.leftJoin(postLike).on(

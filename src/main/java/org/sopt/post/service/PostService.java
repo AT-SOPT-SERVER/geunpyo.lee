@@ -22,7 +22,7 @@ import org.sopt.post.repository.PostLikeRepository;
 import org.sopt.post.repository.PostRepository;
 import org.sopt.post.repository.dto.CommentDetailDto;
 import org.sopt.post.repository.dto.PostPageDto;
-import org.sopt.post.repository.dto.PostSummaryDto;
+import org.sopt.post.repository.dto.PostSummary;
 import org.sopt.post.service.request.PostCreateCommand;
 import org.sopt.user.domain.User;
 import org.springframework.data.domain.Page;
@@ -71,7 +71,7 @@ public class PostService {
 
 	@Transactional(readOnly = true)
 	public PostDetailResponse getPostById(long postId) {
-		PostSummaryDto postDetail = postRepository.findPostSummary(postId);
+		PostSummary postDetail = postRepository.findPostSummary(postId);
 		List<CommentDetailDto> commentDetails = postRepository.findCommentDetails(postDetail.getId());
 
 		return PostDetailResponse.of(postDetail, commentDetails);

@@ -3,7 +3,7 @@ package org.sopt.post.controller.response;
 import java.util.List;
 
 import org.sopt.post.repository.dto.CommentDetailDto;
-import org.sopt.post.repository.dto.PostSummaryDto;
+import org.sopt.post.repository.dto.PostSummary;
 
 public record PostDetailResponse(
 	String title,
@@ -11,7 +11,7 @@ public record PostDetailResponse(
 	String username,
 	List<CommentDetailDto> comments
 ) {
-	public static PostDetailResponse of(PostSummaryDto postDetail, List<CommentDetailDto> commentDetails) {
+	public static PostDetailResponse of(PostSummary postDetail, List<CommentDetailDto> commentDetails) {
 
 		return new PostDetailResponse(
 			postDetail.getTitle(),
