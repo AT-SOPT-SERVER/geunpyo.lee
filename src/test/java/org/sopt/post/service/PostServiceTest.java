@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.sopt.comment.domain.Comment;
 import org.sopt.comment.repository.CommentLikeRepository;
 import org.sopt.comment.repository.CommentRepository;
-import org.sopt.post.controller.response.PostDetailResponse;
+import org.sopt.post.controller.response.PostDetailsResponse;
 import org.sopt.post.controller.response.PostResponse;
 import org.sopt.post.domain.Content;
 import org.sopt.post.domain.Post;
@@ -130,17 +130,17 @@ class PostServiceTest {
 
 		//when
 
-		PostDetailResponse response = postService.getPostById(savedPost.getId());
+		PostDetailsResponse response = postService.getPostById(savedPost.getId());
 
 		//then
 
-		assertThat(response.content()).isEqualTo("내용");
+		assertThat(response.post().content()).isEqualTo("내용");
 
 		assertThat(response.comments()).hasSize(3)
 			.extracting("authorName")
 			.containsExactly("test", "test", "test");
 
-		assertThat(response.likesCount()).isEqualTo(1);
+		assertThat(response.post().likesCount()).isEqualTo(1);
 
 	}
 

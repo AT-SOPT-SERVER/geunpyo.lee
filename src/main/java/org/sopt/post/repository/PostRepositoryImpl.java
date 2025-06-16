@@ -63,7 +63,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 					post.title.content,
 					post.content.value,
 					user.name,
-					postLike.id.countDistinct().coalesce(0L)
+					postLike.id.countDistinct()
 				)
 			)
 			.from(post)

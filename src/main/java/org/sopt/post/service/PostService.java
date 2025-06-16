@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.sopt.comment.controller.response.CommentDetail;
 import org.sopt.comment.repository.CommentRepository;
 import org.sopt.post.controller.request.PostUpdateRequest;
-import org.sopt.post.controller.response.PostDetailResponse;
+import org.sopt.post.controller.response.PostDetail;
+import org.sopt.post.controller.response.PostDetailsResponse;
 import org.sopt.post.controller.response.PostResponse;
 import org.sopt.post.domain.Content;
 import org.sopt.post.domain.Post;
@@ -70,11 +72,16 @@ public class PostService {
 	}
 
 	@Transactional(readOnly = true)
-	public PostDetailResponse getPostById(long postId) {
-		PostSummaryProjection postDetail = postRepository.findPostSummary(postId);
-		List<CommentDetailProjection> commentDetails = postRepository.findCommentDetails(postDetail.getId());
+	public PostDetailsResponse getPostById(long postId) {
+		PostSummaryProjection postDetailProjections = postRepository.findPostSummary(postId);
+		List<CommentDetailProjection> commentDetailProjections = postRepository.findCommentDetails(
+			postDetailProjections.getId());
 
-		return PostDetailResponse.of(postDetail, commentDetails);
+		return PostDetailsResponse.of(
+			PostDetail.from(postDetailProjections),
+			commentDetailProjections.stream()
+				.map(CommentDetail::from)
+				.toList());
 	}
 
 	@Transactional
