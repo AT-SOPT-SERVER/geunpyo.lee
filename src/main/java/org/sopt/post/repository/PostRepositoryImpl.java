@@ -3,11 +3,7 @@ package org.sopt.post.repository;
 import static org.sopt.post.domain.QPost.*;
 import static org.sopt.user.domain.QUser.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.sopt.comment.domain.QComment;
@@ -16,18 +12,17 @@ import org.sopt.post.domain.Post;
 import org.sopt.post.domain.QPost;
 import org.sopt.post.domain.QPostLike;
 import org.sopt.post.domain.constant.Tag;
-import org.sopt.post.repository.dto.CommentDetailDto;
-import org.sopt.post.repository.dto.PostPageDto;
-import org.sopt.post.repository.dto.PostSummary;
-import org.sopt.post.repository.dto.QPostSummary;
+import org.sopt.post.repository.dto.CommentDetailProjection;
+import org.sopt.post.repository.dto.PostPageProjection;
+import org.sopt.post.repository.dto.PostSummaryProjection;
+import org.sopt.post.repository.dto.QCommentDetailProjection;
+import org.sopt.post.repository.dto.QPostSummaryProjection;
 import org.sopt.user.domain.QUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -57,13 +52,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 	}
 
 	@Override
-	public PostSummary findPostSummary(Long postId) {
+	public PostSummaryProjection findPostSummary(Long postId) {
 		QPost post = QPost.post;
 		QUser user = QUser.user;
 		QPostLike postLike = QPostLike.postLike;
 
 		return queryFactory
-			.select(new QPostSummary(
+			.select(new QPostSummaryProjection(
 					post.id,
 					post.title.content,
 					post.content.value,
@@ -83,13 +78,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 	}
 
 	@Override
-	public List<CommentDetailDto> findCommentDetails(Long postId) {
+	public List<CommentDetailProjection> findCommentDetails(Long postId) {
 		QComment comment = QComment.comment;
 		QUser user = QUser.user;
 		QCommentLike commentLike = QCommentLike.commentLike;
 
 		return queryFactory
-			.select(Projections.constructor(CommentDetailDto.class,
+			.select(new QCommentDetailProjection(
 				comment.id,
 				comment.content,
 				comment.createdAt,
@@ -109,7 +104,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 	}
 
 	@Override
-	public Page<PostPageDto> search(Pageable pageable) {
+	public Page<PostPageProjection> search(Pageable pageable) {
 
 		List<Post> posts = queryFactory
 			.selectFrom(post)
@@ -119,8 +114,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 			.orderBy(post.createdAt.desc())
 			.fetch();
 
-		List<PostPageDto> results = posts.stream()
-			.map(this::convertToDto)
+		List<PostPageProjection> results = posts.stream()
+			.map(PostPageProjection::from)
 			.collect(Collectors.toList());
 
 		JPAQuery<Long> countQuery = queryFactory
@@ -128,36 +123,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 			.from(post);
 
 		return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
-	}
-
-	private PostPageDto convertToDto(Post post) {
-		return new PostPageDto(
-			post.getId(),
-			post.getTitle(),
-			post.getUser().getName(),
-			post.getContent(),
-			post.getTags()
-		);
-	}
-
-	private Map<Long, List<Tag>> getTagsForPosts(Set<Long> postIds) {
-		QPost qPost = QPost.post;
-
-		List<Tuple> tagResults = queryFactory
-			.select(qPost.id, qPost.tags)
-			.from(qPost)
-			.where(qPost.id.in(postIds))
-			.fetch();
-
-		Map<Long, List<Tag>> tagsMap = new HashMap<>();
-		for (Tuple tuple : tagResults) {
-			Long postId = tuple.get(qPost.id);
-			List<Tag> tags = tuple.get(qPost.tags);
-
-			tagsMap.computeIfAbsent(postId, k -> new ArrayList<>()).addAll(tags);
-		}
-
-		return tagsMap;
 	}
 
 	private BooleanExpression tagCondition(Tag tag) {

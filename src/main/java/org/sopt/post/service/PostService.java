@@ -20,9 +20,9 @@ import org.sopt.post.exception.PostTitleDuplicateException;
 import org.sopt.post.exception.RequestCooldownException;
 import org.sopt.post.repository.PostLikeRepository;
 import org.sopt.post.repository.PostRepository;
-import org.sopt.post.repository.dto.CommentDetailDto;
-import org.sopt.post.repository.dto.PostPageDto;
-import org.sopt.post.repository.dto.PostSummary;
+import org.sopt.post.repository.dto.CommentDetailProjection;
+import org.sopt.post.repository.dto.PostPageProjection;
+import org.sopt.post.repository.dto.PostSummaryProjection;
 import org.sopt.post.service.request.PostCreateCommand;
 import org.sopt.user.domain.User;
 import org.springframework.data.domain.Page;
@@ -62,7 +62,7 @@ public class PostService {
 
 	@Transactional(readOnly = true)
 	public List<PostResponse> getAllPost() {
-		Page<PostPageDto> posts = postRepository.search(PageRequest.of(0, 10));
+		Page<PostPageProjection> posts = postRepository.search(PageRequest.of(0, 10));
 
 		return posts.stream()
 			.map(PostResponse::from)
@@ -71,8 +71,8 @@ public class PostService {
 
 	@Transactional(readOnly = true)
 	public PostDetailResponse getPostById(long postId) {
-		PostSummary postDetail = postRepository.findPostSummary(postId);
-		List<CommentDetailDto> commentDetails = postRepository.findCommentDetails(postDetail.getId());
+		PostSummaryProjection postDetail = postRepository.findPostSummary(postId);
+		List<CommentDetailProjection> commentDetails = postRepository.findCommentDetails(postDetail.getId());
 
 		return PostDetailResponse.of(postDetail, commentDetails);
 	}

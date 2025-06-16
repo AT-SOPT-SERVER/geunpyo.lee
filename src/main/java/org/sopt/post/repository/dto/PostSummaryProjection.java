@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PostSummary {
+public class PostSummaryProjection {
 	private Long id;
 	private String title;
 	private String content;
@@ -15,7 +15,7 @@ public class PostSummary {
 	private Long likesCount;
 
 	@QueryProjection
-	public PostSummary(Long id, String title, String content, String authorName, Long likesCount) {
+	public PostSummaryProjection(Long id, String title, String content, String authorName, Long likesCount) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
