@@ -29,7 +29,7 @@ public class CommentController {
 	private final CommentLikeService commentLikeService;
 
 	@PostMapping("/posts/{postId}/comments")
-	public ResponseDto<CommentResponse> createComment(User user,
+	public ResponseDto<CommentResponse> createComment(@Auth User user,
 		@PathVariable Long postId,
 		@RequestBody CommentCreateRequest request) {
 		return ResponseDto.ok(commentService.createComment(user, postId, null, request.toCommand()));
