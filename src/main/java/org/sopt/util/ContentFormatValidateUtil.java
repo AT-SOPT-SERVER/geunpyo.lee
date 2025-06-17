@@ -2,8 +2,8 @@ package org.sopt.util;
 
 import static org.sopt.util.StringLengthUtil.*;
 
-import org.sopt.exception.ContentEmptyException;
-import org.sopt.exception.ContentLengthException;
+import org.sopt.post.exception.ContentEmptyException;
+import org.sopt.post.exception.ContentLengthException;
 
 public class ContentFormatValidateUtil {
 	private static final int CONTENT_MAX_LENGTH = 1000;

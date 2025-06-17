@@ -2,8 +2,8 @@ package org.sopt.util;
 
 import static org.sopt.util.StringLengthUtil.*;
 
-import org.sopt.exception.TitleEmptyException;
-import org.sopt.exception.TitleLengthException;
+import org.sopt.post.exception.TitleEmptyException;
+import org.sopt.post.exception.TitleLengthException;
 
 public class TitleFormatValidateUtil {
 	private static final int TITLE_MAX_LENGTH = 30;
