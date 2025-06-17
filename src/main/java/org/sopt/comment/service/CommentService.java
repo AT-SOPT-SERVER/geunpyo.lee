@@ -7,6 +7,7 @@ import org.sopt.comment.repository.CommentRepository;
 import org.sopt.comment.service.exception.CommentNotFoundException;
 import org.sopt.comment.service.request.CommentCreateCommand;
 import org.sopt.comment.service.request.CommentUpdateCommand;
+import org.sopt.global.common.annotation.Auth;
 import org.sopt.post.domain.Post;
 import org.sopt.post.exception.AccessDeniedException;
 import org.sopt.post.exception.PostNotFoundException;
@@ -25,7 +26,7 @@ public class CommentService {
 	private final PostRepository postRepository;
 
 	@Transactional
-	public CommentResponse createComment(User user, long postId, Long parentId, CommentCreateCommand command) {
+	public CommentResponse createComment(@Auth User user, long postId, Long parentId, CommentCreateCommand command) {
 		Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 		validateContentLength(command.content());
 
@@ -36,7 +37,7 @@ public class CommentService {
 		return CommentResponse.from(savedComment);
 	}
 
-	private Comment buildComment(User user, Post post, Long parentId, String content) {
+	private Comment buildComment(@Auth User user, Post post, Long parentId, String content) {
 
 		if (parentId == null) {
 			return Comment.createWithoutParent(content, user, post);
@@ -47,7 +48,7 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void updateComment(User user, long commentId, CommentUpdateCommand command) {
+	public void updateComment(@Auth User user, long commentId, CommentUpdateCommand command) {
 		Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 		checkAuthentication(user, comment);
 
@@ -57,14 +58,14 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void deleteComment(User user, long commentId) {
+	public void deleteComment(@Auth User user, long commentId) {
 		Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
 		checkAuthentication(user, comment);
 
 		commentRepository.delete(comment);
 	}
 
-	private void checkAuthentication(User user, Comment comment) {
+	private void checkAuthentication(@Auth User user, Comment comment) {
 		if (!comment.getUser().equals(user)) {
 			throw new AccessDeniedException();
 		}
