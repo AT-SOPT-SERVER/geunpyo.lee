@@ -3,7 +3,6 @@ package org.sopt.comment.service;
 import org.sopt.comment.controller.response.CommentLikeChangeResponse;
 import org.sopt.comment.domain.CommentLike;
 import org.sopt.comment.repository.CommentLikeRepository;
-import org.sopt.comment.repository.CommentRepository;
 import org.sopt.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommentLikeService {
-	private final CommentRepository commentRepository;
 	private final CommentLikeRepository commentLikeRepository;
 
 	@Transactional
